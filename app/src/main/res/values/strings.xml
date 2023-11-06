@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Spotify_Lyte</string>
+    <string name="default_web_client_id" />
+
+    <string name="search_btn_text">Search artists, songs and playlists</string>
+    <string name="action_settings">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

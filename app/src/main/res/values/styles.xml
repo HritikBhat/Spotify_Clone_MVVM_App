@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="BottomNavigationView" parent="Widget.Design.BottomNavigationView">
+        <item name="android:background">@color/spotify_bottom_nav_bg</item>
+    </style>
+
+    <style name="BottomNavigationView.Text" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/bottom_nav_unselected_color</item>
+    </style>
+
+    <style name="BottomNavigationView.Text.Selected" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="CustomSearchToolbar" parent="android:Theme.Holo.Light.DarkActionBar">
+        <!-- Text color -->
+        <item name="android:editTextColor">@color/white</item>
+        <!-- Hint text color -->
+        <item name="android:textColorHint">@color/appBarTextHint_grey</item>
+        <item name="colorControlNormal">#FFFFFF</item>
+        <item name="android:tint">@color/white</item>
+        //cursor color
+        <item name="colorAccent">@color/white</item>
+    </style>
+
+</resources>

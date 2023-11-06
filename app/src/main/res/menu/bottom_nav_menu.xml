@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bottom_nav_menu.xml -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_home"
+        android:title="Home"
+        android:icon="@drawable/ic_home" />
+
+    <item
+        android:id="@+id/navigation_search"
+        android:title="Search"
+        android:icon="@drawable/ic_search" />
+
+    <item
+        android:id="@+id/navigation_favorites"
+        android:title="Favorites"
+        android:icon="@drawable/ic_favourites_unselected" />
+
+    <item
+        android:id="@+id/navigation_premium"
+        android:title="Premium"
+        android:icon="@drawable/spotify_logo_splash" />
+</menu>

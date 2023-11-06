@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="violet_splash">#FF2E48C4</color>
+    <color name="purple_splash">#FFD1ADCF</color>
+
+    <color name="spotify_bg">#FF121212</color>
+    <color name="spotify_bottom_nav_bg">#FF282828</color>
+    <color name="bottom_nav_unselected_color">#FFAFAFAF</color>
+
+    <color name="genre_green">#FF7E9B81</color>
+    <color name="genre_blue">#FF1E3264</color>
+    <color name="genre_lavender">#FF8D67AB</color>
+    <color name="genre_orange">#FFB06239</color>
+    <color name="genre_brown">#FF7D4B32</color>
+    <color name="appBarBG_grey">#FF535353</color>
+    <color name="appBarTextHint_grey">#FF9D9D9D</color>
+    <color name="playlist_gradient_brown">#FF5C3732</color>
+    <color name="shuffleButtonColor">#FF1ED760</color>
+    <color name="addToPlaylistSong">#FF1A4376</color>
+
+</resources>
