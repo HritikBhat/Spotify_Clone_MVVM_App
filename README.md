@@ -2,6 +2,7 @@
 
 This project is a Spotify clone developed in Kotlin, utilizing the MVVM (Model-View-ViewModel) architecture along with Coroutines and Data Binding to replicate some functionalities of the popular music streaming service.
 
+![image](https://github.com/HritikBhat/Spotify_Clone_MVVM_App/assets/43090040/0f95acab-23af-45c5-99c4-dc03781938ae)
 
 
 
