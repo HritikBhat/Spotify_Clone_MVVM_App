@@ -11,10 +11,10 @@ This project is a Spotify clone developed in Kotlin, utilizing the MVVM (Model-V
 
 
 Features
-User Authentication: Allows users to sign in, sign up, and manage their profiles via PHP Server.
-Browse Music: Users can explore and search for songs, albums, and artists.
-Create and Manage Playlists: Users can create, edit, and delete their playlists.
-Playback Controls: Basic music playback functionalities such as play, pause, skip, and shuffle.
+User Authentication: Allows users to sign in, sign up, and manage their profiles via PHP Server.<br>
+Browse Music: Users can explore and search for songs, albums, and artists.<br>
+Create and Manage Playlists: Users can create, edit, and delete their playlists.<br>
+Playback Controls: Basic music playback functionalities such as play, pause, skip, and shuffle.<br>
 
 Features/Tasks needs to completed:
 Made For You Section
