@@ -27,6 +27,12 @@ MVVM Architecture: The project is structured using the Model-View-ViewModel desi
 Coroutines: Used for asynchronous programming, simplifying code and handling long-running tasks.<br>
 Data Binding: Connects UI components in the XML layouts with data sources and reduces boilerplate code in activities/fragments.<br>
 
+Disclaimer<br>
+This project and its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC or any of its affiliates and subsidiaries.<br>
+<br>
+Any trademark, service mark, trade name, or other intellectual property rights used in this project are owned by the respective owners.<br>
+
+
 Contributing<br>
 Contributions are welcome! If you want to contribute to this project, feel free to fork the repository and submit a pull request with your changes.<br>
 
