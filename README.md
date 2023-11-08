@@ -35,6 +35,6 @@ License<br>
 This project is licensed under the MIT License - see the LICENSE file for details.<br>
 
 Disclaimer<br>
-This project and its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC or any of its affiliates and subsidiaries.<br>
+This project and its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with Spotify,YouTube, Google LLC or any of its affiliates and subsidiaries.<br>
 <br>
 Any trademark, service mark, trade name, or other intellectual property rights used in this project are owned by the respective owners.<br>
