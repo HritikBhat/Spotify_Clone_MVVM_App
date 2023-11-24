@@ -7,22 +7,22 @@
 
     <fragment
         android:id="@+id/navigation_favorites"
-        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.FavouritesFragment"
+        android:name="com.hritikbhat.spotify_mvvm_app.ui.fragments.FavouritesFragment"
         android:label="fragment_favourites"
         tools:layout="@layout/fragment_favourites" />
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.HomeFragment"
+        android:name="com.hritikbhat.spotify_mvvm_app.ui.fragments.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/navigation_search"
-        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchFragment"
+        android:name="com.hritikbhat.spotify_mvvm_app.ui.fragments.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
     <fragment
         android:id="@+id/navigation_premium"
-        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.PremiumFragment"
+        android:name="com.hritikbhat.spotify_mvvm_app.ui.fragments.PremiumFragment"
         android:label="fragment_premium"
         tools:layout="@layout/fragment_premium" />
 </navigation>

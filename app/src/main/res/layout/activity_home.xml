@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.Activities.HomeActivity"
+        tools:context=".ui.activities.HomeActivity"
         android:background="@color/spotify_bg">
 
         <fragment
@@ -27,7 +27,7 @@
 
         <fragment
             android:id="@+id/nowPlaying"
-            android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.NowPlaying"
+            android:name="com.hritikbhat.spotify_mvvm_app.ui.fragments.NowPlaying"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:visibility="gone"

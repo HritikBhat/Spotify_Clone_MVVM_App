@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.Activities.PlayActivity"
+        tools:context=".ui.activities.PlayActivity"
         android:background="@color/spotify_bg">
 
         <androidx.constraintlayout.widget.ConstraintLayout

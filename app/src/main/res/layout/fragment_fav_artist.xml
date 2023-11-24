@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/spotify_bg"
-    tools:context=".ui.Fragments.FavouriteSubFragments.FavArtistFragment">
+    tools:context=".ui.fragments.FavouriteSubFragments.FavArtistFragment">
 
 
     <include

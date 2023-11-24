@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-        android:name=".Utils.Services.ApplicationClass"
+        android:name=".utils.Services.ApplicationClass"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -21,19 +21,19 @@
         android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
         <activity
-            android:name=".ui.Activities.SettingsActivity"
+            android:name=".ui.activities.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.Activities.PlayActivity"
+            android:name=".ui.activities.PlayActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.Activities.HomeActivity"
+            android:name=".ui.activities.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.Activities.LoginSignUpActivity"
+            android:name=".ui.activities.LoginSignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.Activities.SplashActivity"
+            android:name=".ui.activities.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,9 +41,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".Utils.Services.MediaPlayerService"
+        <service android:name=".utils.Services.MediaPlayerService"
             android:enabled="true"/>
-        <receiver android:name=".Utils.Services.NotificationReceiver"/>
+        <receiver android:name=".utils.Services.NotificationReceiver"/>
     </application>
 
 </manifest>

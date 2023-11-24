@@ -73,7 +73,6 @@ dependencies {
     implementation("androidx.room:room-ktx:$room_version")
 
 
-
     val lifecycleVersion = "2.6.2"
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:${lifecycleVersion}")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
