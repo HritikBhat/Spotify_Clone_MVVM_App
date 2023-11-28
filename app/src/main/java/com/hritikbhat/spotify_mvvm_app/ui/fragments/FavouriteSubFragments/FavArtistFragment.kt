@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.hritikbhat.spotify_mvvm_app.viewModels.subFragmentsViewModels.FavArtistViewModel
+import com.hritikbhat.spotify_mvvm_app.viewModels.SubFragmentsViewModels.FavArtistViewModel
 import com.hritikbhat.spotify_mvvm_app.R
 
 class FavArtistFragment : Fragment() {

@@ -23,7 +23,7 @@ import com.hritikbhat.spotify_mvvm_app.adapters.FavPlaylistAdapter
 import com.hritikbhat.spotify_mvvm_app.adapters.PlaylistAdapter
 import com.hritikbhat.spotify_mvvm_app.models.AddSongPlaylistQuery
 import com.hritikbhat.spotify_mvvm_app.models.CustomPlaylistQuery
-import com.hritikbhat.spotify_mvvm_app.viewModels.subFragmentsViewModels.FavPlaylistViewModel
+import com.hritikbhat.spotify_mvvm_app.viewModels.SubFragmentsViewModels.FavPlaylistViewModel
 import com.hritikbhat.spotify_mvvm_app.models.FavPlaylistQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavPlaylistsX
 import com.hritikbhat.spotify_mvvm_app.models.FavSongQuery

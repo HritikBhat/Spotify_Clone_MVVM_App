@@ -1,4 +1,4 @@
-package com.hritikbhat.spotify_mvvm_app.viewModels.subFragmentsViewModels
+package com.hritikbhat.spotify_mvvm_app.viewModels.SubFragmentsViewModels
 
 import androidx.lifecycle.ViewModel
 import com.hritikbhat.spotify_mvvm_app.models.AddSongPlaylistQuery

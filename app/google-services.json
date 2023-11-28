@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "367050526953-mkvc3lkssnk4lrio78p5e3s58ajtou57.apps.googleusercontent.com",
+          "client_id": "367050526953-8sl69dcre9vf17h8mgrb6d5h3ekvkaqb.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.hritikbhat.spotify_mvvm_app",
-            "certificate_hash": "b4b01e2de801431cf3edde04b10da28f7978173b"
+            "certificate_hash": "e502a2f6c86c5b98d4d42794325b9cbf77c73681"
           }
         },
         {

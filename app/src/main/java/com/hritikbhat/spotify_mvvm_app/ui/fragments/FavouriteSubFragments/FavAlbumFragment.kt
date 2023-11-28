@@ -22,7 +22,7 @@ import com.hritikbhat.spotify_mvvm_app.adapters.AddToPlaylistAdapter
 import com.hritikbhat.spotify_mvvm_app.adapters.FavPlaylistAdapter
 import com.hritikbhat.spotify_mvvm_app.adapters.PlaylistAdapter
 import com.hritikbhat.spotify_mvvm_app.models.AddSongPlaylistQuery
-import com.hritikbhat.spotify_mvvm_app.viewModels.subFragmentsViewModels.FavAlbumViewModel
+import com.hritikbhat.spotify_mvvm_app.viewModels.SubFragmentsViewModels.FavAlbumViewModel
 import com.hritikbhat.spotify_mvvm_app.models.FavPlaylistQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavSongQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavTransactionResp

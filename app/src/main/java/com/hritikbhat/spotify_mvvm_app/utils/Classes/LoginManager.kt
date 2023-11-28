@@ -34,6 +34,9 @@ class LoginManager(private val apiService: ApiService) {
                                 editor.apply()
                             }
                         } else {
+
+                            Log.d("Status","doFirstTimeLogin having some issues")
+                            Log.d("Response", "${response.body()}")
                             // Handle the case where the response body is null
                         }
                     } else {

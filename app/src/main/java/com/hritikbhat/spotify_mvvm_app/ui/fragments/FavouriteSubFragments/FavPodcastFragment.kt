@@ -19,7 +19,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hritikbhat.spotify_mvvm_app.adapters.FavPlaylistAdapter
 import com.hritikbhat.spotify_mvvm_app.adapters.PlaylistAdapter
-import com.hritikbhat.spotify_mvvm_app.viewModels.subFragmentsViewModels.FavPodcastViewModel
+import com.hritikbhat.spotify_mvvm_app.viewModels.SubFragmentsViewModels.FavPodcastViewModel
 import com.hritikbhat.spotify_mvvm_app.models.FavPlaylistQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavTransactionResp
 import com.hritikbhat.spotify_mvvm_app.models.OperationResult

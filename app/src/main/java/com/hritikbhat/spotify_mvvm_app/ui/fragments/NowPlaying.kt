@@ -3,6 +3,7 @@ package com.hritikbhat.spotify_mvvm_app.ui.fragments
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,11 +37,20 @@ class NowPlaying : Fragment() {
             playMusic()
         }
 
+
+
         binding.root.setOnClickListener {
+            val songListArr = PlayActivity.songListArr
+            Log.d("Fav Flag gone to ","${PlayActivity.isFav}")
+            Log.d("Song List Before is : ",PlayActivity.songListArr.toString())
+            songListArr[PlayActivity.position].isFav = PlayActivity.isFav
+            Log.d("Song List After is : ",PlayActivity.songListArr.toString())
+
             val intent = Intent(requireContext(), PlayActivity::class.java)
+
             val gson = Gson()
             intent.putExtra("index", PlayActivity.position)
-            intent.putExtra("songList", gson.toJson(PlayActivity.songListArr))
+            intent.putExtra("songList", gson.toJson(songListArr))
             intent.putExtra("position", PlayActivity.position)
             intent.putExtra("ptype",PlayActivity.ptype)
             intent.putExtra("onShuffle",PlayActivity.onShuffle)
@@ -58,7 +68,7 @@ class NowPlaying : Fragment() {
 //              binding.root.layoutParams.height = ConstraintLayout.LayoutParams.WRAP_CONTENT
                 binding.nowPlayingSongName.isSelected = true
                 binding.nowPlayingSongName.text = PlayActivity.songListArr[PlayActivity.position].sname
-                if(PlayActivity.isPlaying) binding.nowPlayingPlayBtn.setImageResource(R.drawable.ic_pause)
+                if(PlayActivity.mediaPlayerService!!.mediaPlayer!!.isPlaying) binding.nowPlayingPlayBtn.setImageResource(R.drawable.ic_pause)
                 else binding.nowPlayingPlayBtn.setImageResource(R.drawable.ic_play)
             }
 

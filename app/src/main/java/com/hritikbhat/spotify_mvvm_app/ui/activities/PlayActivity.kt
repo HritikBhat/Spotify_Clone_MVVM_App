@@ -59,7 +59,7 @@ class PlayActivity : AppCompatActivity(),ServiceConnection ,AddToPlaylistAdapter
     private val addToPlaylistAdapter = AddToPlaylistAdapter()
 
     private lateinit var extras: Bundle
-    private var isFav:Boolean = false
+
     private lateinit var sharedPref: SharedPreferences
     private val initTimeFormatMMSS = "00:00"
 
@@ -69,6 +69,7 @@ class PlayActivity : AppCompatActivity(),ServiceConnection ,AddToPlaylistAdapter
         var position: Int = 0
         var isPlaying:Boolean = true
         var ptype:Int = -1
+        var isFav:Boolean = false
         lateinit var artistArrString: String
         var mediaPlayerService : MediaPlayerService? = null
         @SuppressLint("StaticFieldLeak")
@@ -132,6 +133,7 @@ class PlayActivity : AppCompatActivity(),ServiceConnection ,AddToPlaylistAdapter
                     setFavSongStatus(FavSongQuery(curr_passHash, sid.toString()), DELETETRANSACTION)
                     binding.favouriteBtn.setBackgroundResource(R.drawable.ic_fav_unselected_white)
                     isFav = false
+                    Log.d("Fav Flag gone to ","$isFav")
                 }
             } else {
 
@@ -140,6 +142,7 @@ class PlayActivity : AppCompatActivity(),ServiceConnection ,AddToPlaylistAdapter
                     setFavSongStatus(FavSongQuery(curr_passHash, sid.toString()), INSERTTRANSACTION)
                     binding.favouriteBtn.setBackgroundResource(R.drawable.ic_fav_selected_white)
                     isFav = true
+                    Log.d("Fav Flag gone to ","$isFav")
                 }
             }
         }
