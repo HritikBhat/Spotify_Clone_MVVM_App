@@ -64,7 +64,7 @@ class FavAlbumFragment : Fragment(), FavPlaylistAdapter.OnItemClickListener,Play
     ): View? {
         // Inflate the layout using data binding
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_fav_album, container, false)
-        binding2 = (requireParentFragment() as FavouritesFragment).binding
+        binding2 = FavouritesFragment.binding
         context = binding.root.context
 
         sharedPref = context.getSharedPreferences(
@@ -129,7 +129,7 @@ class FavAlbumFragment : Fragment(), FavPlaylistAdapter.OnItemClickListener,Play
         }
     }
 
-    override fun onItemClick() {
+    override fun onBackButtonClicked() {
         activity?.onBackPressedDispatcher?.onBackPressed()
     }
 

@@ -5,6 +5,7 @@ package com.hritikbhat.spotify_mvvm_app.utils.Services
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
@@ -121,7 +122,14 @@ class MediaPlayerService: Service() {
             .addAction(R.drawable.ic_next,"Next", nextPendingIntent)
             .addAction(R.drawable.exit_icon,"Exit", exitPendingIntent)
             .build()
-        startForeground(8,notification)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            startForeground(8,notification)
+        } else {
+            //For API 34 and above
+            startForeground(8, notification,
+                FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
+        }
+
     }
 
     private fun getBitmapAsyncAndDoWork(imageUrl: String) {

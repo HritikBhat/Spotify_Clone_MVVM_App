@@ -12,28 +12,33 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.hritikbhat.spotify_mvvm_app.R
 import com.hritikbhat.spotify_mvvm_app.adapters.AddToPlaylistAdapter
 import com.hritikbhat.spotify_mvvm_app.adapters.PlaylistAdapter
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentDoSearchBinding
+import com.hritikbhat.spotify_mvvm_app.databinding.FragmentFavouritesBinding
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentShowPlaylistSongsBinding
+import com.hritikbhat.spotify_mvvm_app.models.AddSongPlaylistQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavPlaylistQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavSongQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavTransactionResp
 import com.hritikbhat.spotify_mvvm_app.models.OperationResult
 import com.hritikbhat.spotify_mvvm_app.models.PlayListDetail
 import com.hritikbhat.spotify_mvvm_app.models.PlayListQuery
+import com.hritikbhat.spotify_mvvm_app.models.Playlist
 import com.hritikbhat.spotify_mvvm_app.models.Song
-import com.hritikbhat.spotify_mvvm_app.models.favPlaylists
-import com.hritikbhat.spotify_mvvm_app.utils.Retrofit.RetrofitHelper
+import com.hritikbhat.spotify_mvvm_app.ui.fragments.FavouritesFragment
 import com.hritikbhat.spotify_mvvm_app.viewModels.SearchViewModel
+import com.hritikbhat.spotify_mvvm_app.viewModels.SubFragmentsViewModels.FavPlaylistViewModel
 import kotlinx.coroutines.launch
 
 class ShowPlaylistSongsFragment : Fragment(),PlaylistAdapter.OnItemClickListener {
 
     private lateinit var binding: FragmentShowPlaylistSongsBinding
+    private lateinit var binding2: FragmentFavouritesBinding
 
     private val playlistAdapter = PlaylistAdapter()
     private lateinit var sharedPref: SharedPreferences
@@ -44,6 +49,9 @@ class ShowPlaylistSongsFragment : Fragment(),PlaylistAdapter.OnItemClickListener
     private  val DELETETRANSACTION=0
 
     private lateinit var viewModel: SearchViewModel
+    private lateinit var viewModel2: FavPlaylistViewModel
+
+    private lateinit var playlistData: Playlist
 
 
     override fun onCreateView(
@@ -51,37 +59,55 @@ class ShowPlaylistSongsFragment : Fragment(),PlaylistAdapter.OnItemClickListener
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_show_playlist_songs, container, false)
+        binding2 = FavouritesFragment.binding
 
         // Initialize the ViewModel
         viewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
+        viewModel2 = ViewModelProvider(this).get(FavPlaylistViewModel::class.java)
 
         sharedPref = requireContext().getSharedPreferences(MY_PREFS_NAME,
             AppCompatActivity.MODE_PRIVATE
         )
         curr_passHash = sharedPref.getString("passHash", "").toString()
 
-        playlistAdapter.setOnItemClickListener(this)
         // Set up RecyclerView
         binding.playlistRC.layoutManager = LinearLayoutManager(context)
-        binding.playlistRC.adapter = playlistAdapter
+
+        val showPlaylistSongsFragmentArgs = ShowPlaylistSongsFragmentArgs.fromBundle(requireArguments())
+
+        binding2.tabLayout.visibility = View.GONE
+        binding2.viewPager.isUserInputEnabled = false
+
+        playlistData = showPlaylistSongsFragmentArgs.playlistObjData
 
 
-
-
+        viewModel.viewModelScope.launch {
+            getPlaylistDetails(playlistData.plname,playlistData.aname,playlistData.pltype,PlayListQuery(playlistData.plid.toString(),curr_passHash))
+        }
 
         return binding.root
     }
 
     suspend  fun getPlaylistDetails(pname: String, aname: String, ptype: Int, plq: PlayListQuery){
-        val operationResult: OperationResult<PlayListDetail> = viewModel.getPlaylistDetails(plq)
+
+        val operationResult: OperationResult<PlayListDetail> = if(playlistData.plid==-1){
+            //Fav Songs Section
+            viewModel2.getFavSongsDetails(plq)
+        } else{
+            viewModel.getPlaylistDetails(plq)
+        }
+
+        Log.d("CHEEZY NOTIFICATION","API Array: ${operationResult.toString()}")
 
         when (operationResult) {
             is OperationResult.Success -> {
                 // Operation was successful, handle the result
 
                 val playListDetails : PlayListDetail = operationResult.data
-                Log.d("CHEEZY NOTIFICATION","API plid value: ${plq.plid}")
-                playlistAdapter.setPlaylistItems(plq.plid,pname,aname,playListDetails.pltype, playListDetails.isFav,playListDetails)
+                Log.d("CHEEZY NOTIFICATION","API Array: ${playListDetails.toString()}")
+                playlistAdapter.setPlaylistItems(plq.plid,pname,aname,ptype, playListDetails.isFav,playListDetails)
+                binding.playlistRC.adapter = playlistAdapter
+                playlistAdapter.setOnItemClickListener(this)
 //                binding.searchFragmentStartLayout.visibility=View.GONE
 //                binding.searchLayout.visibility = View.GONE
 //                binding.playlistRC.visibility = View.VISIBLE
@@ -97,8 +123,10 @@ class ShowPlaylistSongsFragment : Fragment(),PlaylistAdapter.OnItemClickListener
         }
     }
 
-    override fun onItemClick() {
-        activity?.onBackPressedDispatcher?.onBackPressed()
+    override fun onBackButtonClicked() {
+        binding2.tabLayout.visibility = View.VISIBLE
+        binding2.viewPager.isUserInputEnabled = true
+        findNavController().popBackStack()
     }
 
     override fun onFavPlaylistButtonClick(isFav: Boolean,plid:Int) {
@@ -153,12 +181,25 @@ class ShowPlaylistSongsFragment : Fragment(),PlaylistAdapter.OnItemClickListener
     }
 
     override fun onItemMoreOptionClick(plid: String,items: MutableList<Song>, pos: Int, ptype: Int) {
-       //Send to SOngMoreOption
+        val action = ShowPlaylistSongsFragmentDirections.actionShowPlaylistSongsFragmentToSongMoreOptionFragment(items[pos])
+        action.plid = plid
+        action.position = pos
+        action.ptype = ptype
+
+        findNavController().navigate(action)
     }
 
     // In Progress
     override fun onItemPlaylistMoreOptionClick(plid: String, pname: String, ptype: Int) {
         //Send to PlaylistMoreOption
+        if (ptype==3){
+            val action = ShowPlaylistSongsFragmentDirections.actionShowPlaylistSongsFragmentToCustomPlaylistMoreOptionFragment2(playlistData)
+            findNavController().navigate(action)
+        }
+        else{
+            //Move to Album Playlist More Option
+        }
+
     }
 
 

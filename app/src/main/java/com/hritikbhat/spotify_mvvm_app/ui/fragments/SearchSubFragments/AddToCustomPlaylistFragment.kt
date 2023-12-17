@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hritikbhat.spotify_mvvm_app.R
 import com.hritikbhat.spotify_mvvm_app.adapters.AddToPlaylistAdapter
@@ -42,7 +43,7 @@ class AddToCustomPlaylistFragment : Fragment(),AddToPlaylistAdapter.OnItemClickL
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_show_playlist_songs, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_add_to_custom_playlist, container, false)
 
         // Initialize the ViewModel
         viewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
@@ -54,10 +55,17 @@ class AddToCustomPlaylistFragment : Fragment(),AddToPlaylistAdapter.OnItemClickL
 
         //Set up AddToPlaylistRC
         binding.addToPlaylistRC.layoutManager = LinearLayoutManager(context)
-        binding.addToPlaylistRC.adapter = addToPlaylistAdapter
-        addToPlaylistAdapter.setOnItemClickListener(this)
 
-        return inflater.inflate(R.layout.fragment_add_to_custom_playlist, container, false)
+        val addToCustomPlaylistFragmentArgs = AddToCustomPlaylistFragmentArgs.fromBundle(requireArguments())
+
+        val sid = addToCustomPlaylistFragmentArgs.sid.toString()
+
+
+        viewModel.viewModelScope.launch {
+            setInitForAddToPlay(sid)
+        }
+
+        return binding.root
     }
 
     private suspend  fun setInitForAddToPlay(sid: String) {
@@ -72,9 +80,9 @@ class AddToCustomPlaylistFragment : Fragment(),AddToPlaylistAdapter.OnItemClickL
                 // Operation was successful, handle the result
 
                 val favTransactionResp : favPlaylists = operationResult.data
-
-
                 addToPlaylistAdapter.setPlaylistItems(favTransactionResp.favPlaylists,sid)
+                binding.addToPlaylistRC.adapter = addToPlaylistAdapter
+                addToPlaylistAdapter.setOnItemClickListener(this)
 
             }
             is OperationResult.Error -> {
@@ -110,12 +118,8 @@ class AddToCustomPlaylistFragment : Fragment(),AddToPlaylistAdapter.OnItemClickL
                 else{
                     Toast.makeText(context,favTransactionResp.message, Toast.LENGTH_LONG).show()
                 }
-//                binding.searchStartLayout.visibility = View.GONE
-//                binding.searchRc.visibility = View.GONE
-//                binding.notFoundLayout.visibility = View.GONE
-//                binding.songMoreOptionLayout.visibility=View.GONE
-//                binding.addToPlaylistRC.visibility=View.GONE
-//                binding.playlistRC.visibility = View.VISIBLE
+                findNavController().popBackStack()
+                findNavController().popBackStack()
                 // Process searchList here
             }
             is OperationResult.Error -> {

@@ -37,6 +37,9 @@
         <argument
             android:name="playlistObjData"
             app:argType="com.hritikbhat.spotify_mvvm_app.models.Playlist" />
+        <action
+            android:id="@+id/action_showPlaylistSongsFragment_to_customPlaylistMoreOptionFragment2"
+            app:destination="@id/customPlaylistMoreOptionFragment" />
     </fragment>
     <fragment
         android:id="@+id/songMoreOptionFragment"
@@ -81,6 +84,15 @@
         android:name="sid"
         app:argType="integer"
         android:defaultValue="-1" />
+    <fragment
+        android:id="@+id/customPlaylistMoreOptionFragment"
+        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.FavouritePlaylistSubFragments.CustomPlaylistMoreOptionFragment"
+        android:label="CustomPlaylistMoreOptionFragment"
+        tools:layout="@layout/fragment_custom_playlist_more_option">
+        <argument
+            android:name="playlistData"
+            app:argType="com.hritikbhat.spotify_mvvm_app.models.Playlist" />
+    </fragment>
 
 
 </navigation>

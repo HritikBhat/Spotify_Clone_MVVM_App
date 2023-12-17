@@ -28,7 +28,7 @@ class PlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     interface OnItemClickListener {
-        fun onItemClick()
+        fun onBackButtonClicked()
         fun onFavPlaylistButtonClick(isFav: Boolean, plid: Int)
         fun onItemMoreOptionClick(plid:String,items: MutableList<Song>, i: Int, ptype: Int)
         fun onItemPlaylistMoreOptionClick(plid:String,pname:String,ptype:Int)
@@ -61,9 +61,10 @@ class PlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is HeaderViewHolder) {
 
+
             val binding = holder.binding
             binding.playlistMenuBtn.visibility=View.INVISIBLE
-            val plURL = RetrofitHelper.BASE_URL +"data/img/playlist/${items[0].albumId}.jpg"
+            Log.d("CHEEZY NOTIFICATION","Ptype is $ptype")
 
             if (ptype==3){
                 binding.playlistFavBtn.visibility=View.INVISIBLE
@@ -79,9 +80,17 @@ class PlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 binding.playlistImage.setImageResource(R.drawable.liked_song_playlist_img_bigpxl)
             }else{
                 binding.playlistFavBtn.visibility= View.VISIBLE
-                Glide.with(binding.root.context)
-                    .load(plURL).thumbnail()
-                    .into(binding.playlistImage)
+
+                if ((itemCount-1)>0){
+                    val plURL = RetrofitHelper.BASE_URL +"data/img/playlist/${items[0].albumId}.jpg"
+
+                    Glide.with(binding.root.context)
+                        .load(plURL).thumbnail()
+                        .into(binding.playlistImage)
+
+                    binding.playlistShufflePlay.visibility = View.GONE
+                }
+
             }
 
             binding.playlistShufflePlay.setOnClickListener(View.OnClickListener {
@@ -116,7 +125,7 @@ class PlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
             binding.playlistBackBtn.setOnClickListener {
-                onItemClickListener?.onItemClick()
+                onItemClickListener?.onBackButtonClicked()
             }
 
 
