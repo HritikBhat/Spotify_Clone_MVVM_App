@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
+    android:id="@+id/bottom_nav_graph"
     app:startDestination="@id/navigation_home">
 
     <fragment
@@ -25,4 +25,9 @@
         android:name="com.hritikbhat.spotify_mvvm_app.ui.fragments.PremiumFragment"
         android:label="fragment_premium"
         tools:layout="@layout/fragment_premium" />
+    <fragment
+        android:id="@+id/addToCustomPlaylistFragment"
+        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.AddToCustomPlaylistFragment"
+        android:label="AddToCustomPlaylistFragment" />
+
 </navigation>

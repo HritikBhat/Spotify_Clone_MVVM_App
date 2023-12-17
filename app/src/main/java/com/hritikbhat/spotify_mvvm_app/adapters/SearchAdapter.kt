@@ -20,7 +20,7 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
     private var onItemClickListener: OnItemClickListener? = null
 
     interface OnItemClickListener {
-        fun onItemClick(plid: Int, plname: String, aname: String, ptype: Int)
+        fun onSearchItemClick(plid: Int, plname: String, aname: String, ptype: Int)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
@@ -64,7 +64,7 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
                         val pname = item.name
                         val ptype = item.type
                         val aname = item.artistArr[0]
-                        onItemClickListener?.onItemClick(plid,pname,aname,ptype)
+                        onItemClickListener?.onSearchItemClick(plid,pname,aname,ptype)
                     }
                 }
                 2 -> {

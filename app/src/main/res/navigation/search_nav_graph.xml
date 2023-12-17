@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/search_nav_graph"
+    app:startDestination="@id/searchStartFragment">
+
+    <fragment
+        android:id="@+id/searchStartFragment"
+        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.SearchStartFragment"
+        android:label="SearchStartFragment"
+        tools:layout="@layout/fragment_search_start">
+        <action
+            android:id="@+id/action_searchStartFragment_to_doSearchFragment"
+            app:destination="@id/doSearchFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/doSearchFragment"
+        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.DoSearchFragment"
+        android:label="DoSearchFragment"
+        tools:layout="@layout/fragment_do_search">
+        <action
+            android:id="@+id/action_doSearchFragment_to_showPlaylistSongsFragment"
+            app:destination="@id/showPlaylistSongsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/showPlaylistSongsFragment"
+        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.ShowPlaylistSongsFragment"
+        android:label="ShowPlaylistSongsFragment"
+        tools:layout="@layout/fragment_show_playlist_songs">
+        <action
+            android:id="@+id/action_showPlaylistSongsFragment_to_playlistMoreOptionFragment"
+            app:destination="@id/playlistMoreOptionFragment" />
+        <action
+            android:id="@+id/action_showPlaylistSongsFragment_to_songMoreOptionFragment"
+            app:destination="@id/songMoreOptionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/songMoreOptionFragment"
+        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.SongMoreOptionFragment"
+        android:label="fragment_song_more_option"
+        tools:layout="@layout/fragment_song_more_option" >
+        <action
+            android:id="@+id/action_songMoreOptionFragment_to_addToCustomPlaylistFragment"
+            app:destination="@id/addToCustomPlaylistFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/playlistMoreOptionFragment"
+        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.PlaylistMoreOptionFragment"
+        android:label="PlaylistMoreOptionFragment"
+        tools:layout="@layout/fragment_playlist_more_option"/>
+
+
+</navigation>
