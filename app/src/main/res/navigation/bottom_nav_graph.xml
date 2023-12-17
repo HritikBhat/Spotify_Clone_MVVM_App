@@ -25,9 +25,5 @@
         android:name="com.hritikbhat.spotify_mvvm_app.ui.fragments.PremiumFragment"
         android:label="fragment_premium"
         tools:layout="@layout/fragment_premium" />
-    <fragment
-        android:id="@+id/addToCustomPlaylistFragment"
-        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.AddToCustomPlaylistFragment"
-        android:label="AddToCustomPlaylistFragment" />
 
 </navigation>

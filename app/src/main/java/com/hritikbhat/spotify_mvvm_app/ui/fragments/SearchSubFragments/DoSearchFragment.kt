@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hritikbhat.spotify_mvvm_app.R
 import com.hritikbhat.spotify_mvvm_app.adapters.SearchAdapter
@@ -22,6 +24,7 @@ import com.hritikbhat.spotify_mvvm_app.models.AllSearchItem
 import com.hritikbhat.spotify_mvvm_app.models.OperationResult
 import com.hritikbhat.spotify_mvvm_app.models.PlayListDetail
 import com.hritikbhat.spotify_mvvm_app.models.PlayListQuery
+import com.hritikbhat.spotify_mvvm_app.models.Playlist
 import com.hritikbhat.spotify_mvvm_app.viewModels.SearchViewModel
 import kotlinx.coroutines.launch
 
@@ -36,6 +39,10 @@ class DoSearchFragment : Fragment(),SearchAdapter.OnItemClickListener {
     private lateinit var viewModel: SearchViewModel
 
     private val handler = Handler(Looper.myLooper()!!)
+
+    private lateinit var searchNavController: NavController
+
+
 
 
     override fun onPause() {
@@ -61,6 +68,8 @@ class DoSearchFragment : Fragment(),SearchAdapter.OnItemClickListener {
             AppCompatActivity.MODE_PRIVATE
         )
         curr_passHash = sharedPref.getString("passHash", "").toString()
+
+        searchNavController = findNavController()
 
         searchRCAdapter.setOnItemClickListener(this)
         binding.searchRc.layoutManager = LinearLayoutManager(context)
@@ -89,6 +98,8 @@ class DoSearchFragment : Fragment(),SearchAdapter.OnItemClickListener {
                 else{
                     binding.searchStartLayout.visibility= View.GONE
                     binding.loadingLayout.visibility= View.VISIBLE
+                    binding.searchRc.visibility = View.GONE
+                    binding.notFoundLayout.visibility = View.GONE
                 }
 
 
@@ -123,10 +134,11 @@ class DoSearchFragment : Fragment(),SearchAdapter.OnItemClickListener {
                 val searchList : List<AllSearchItem> = operationResult.data
                 searchRCAdapter.updateItems(searchList)
                 if (searchList.isEmpty()){
-                    binding.searchQueryText.text = "'${binding.searchEditText.text.toString()}'"
+                    binding.searchQueryText.text = "${binding.searchEditText.text}"
                     binding.searchStartLayout.visibility = View.GONE
                     binding.searchRc.visibility = View.GONE
                     binding.notFoundLayout.visibility = View.VISIBLE
+                    binding.loadingLayout.visibility= View.GONE
 
                 }
                 else{
@@ -151,6 +163,11 @@ class DoSearchFragment : Fragment(),SearchAdapter.OnItemClickListener {
         viewModel.viewModelScope.launch {
 //            getPlaylistDetails(pname,aname,ptype, PlayListQuery(plid.toString(),curr_passHash))
             //Send to ShowPlaylistSongsFragment
+            val playlist = Playlist(plid,pname,ptype,aname)
+
+            val showPlaylistSongsFragmentAction = DoSearchFragmentDirections.actionDoSearchFragmentToShowPlaylistSongsFragment(playlist)
+            searchNavController.navigate(showPlaylistSongsFragmentAction)
+
         }
     }
 
