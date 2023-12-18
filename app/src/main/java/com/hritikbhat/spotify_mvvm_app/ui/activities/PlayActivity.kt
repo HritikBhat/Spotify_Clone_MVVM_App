@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
@@ -520,6 +521,10 @@ class PlayActivity : AppCompatActivity(),ServiceConnection ,AddToPlaylistAdapter
         viewModel.viewModelScope.launch {
             addSongToCustomPlaylist(curr_passHash,plid,sid)
         }
+    }
+
+    override fun onSelectingBackButton() {
+        //Nothing here
     }
 
     private suspend fun addSongToCustomPlaylist(currPassHash: String, plid: String, sid: String) {

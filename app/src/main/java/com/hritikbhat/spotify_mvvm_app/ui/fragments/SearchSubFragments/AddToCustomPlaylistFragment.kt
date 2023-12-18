@@ -1,15 +1,17 @@
 package com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments
 
+import android.content.ContentValues.TAG
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
@@ -17,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.hritikbhat.spotify_mvvm_app.R
 import com.hritikbhat.spotify_mvvm_app.adapters.AddToPlaylistAdapter
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentAddToCustomPlaylistBinding
-import com.hritikbhat.spotify_mvvm_app.databinding.FragmentShowPlaylistSongsBinding
 import com.hritikbhat.spotify_mvvm_app.models.AddSongPlaylistQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavPlaylistQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavTransactionResp
@@ -65,6 +66,23 @@ class AddToCustomPlaylistFragment : Fragment(),AddToPlaylistAdapter.OnItemClickL
             setInitForAddToPlay(sid)
         }
 
+        requireActivity().onBackPressedDispatcher.addCallback(
+            requireActivity(),
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    Log.d(TAG, "Fragment back pressed invoked")
+                    // Do custom work here
+
+                    // if you want onBackPressed() to be called as normal afterwards
+                    if (isEnabled) {
+                        isEnabled = false
+                        onSelectingBackButton()
+                    }
+                }
+            }
+        )
+
+
         return binding.root
     }
 
@@ -101,6 +119,10 @@ class AddToCustomPlaylistFragment : Fragment(),AddToPlaylistAdapter.OnItemClickL
         }
     }
 
+    override fun onSelectingBackButton() {
+        findNavController().popBackStack()
+    }
+
     private suspend fun addSongToCustomPlaylist(curr_passHash: String, plid: String, sid: String) {
         var operationResult: OperationResult<FavTransactionResp> = viewModel.addSongToPlaylist(
             AddSongPlaylistQuery(curr_passHash,plid,sid)
@@ -130,4 +152,7 @@ class AddToCustomPlaylistFragment : Fragment(),AddToPlaylistAdapter.OnItemClickL
             }
         }
     }
+
+
+
 }

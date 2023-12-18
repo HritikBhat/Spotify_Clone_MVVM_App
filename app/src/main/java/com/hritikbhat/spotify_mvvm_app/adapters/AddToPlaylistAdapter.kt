@@ -20,6 +20,7 @@ class AddToPlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface OnItemClickListener {
         fun onSelectingAddToPlaylistItemClick(plid:String,sid:String)
+        fun onSelectingBackButton()
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
@@ -47,6 +48,10 @@ class AddToPlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is HeaderViewHolder) {
             val binding = holder.binding
+
+            binding.playlistBackBtn.setOnClickListener{
+                onItemClickListener?.onSelectingBackButton()
+            }
 
 
         } else if (holder is ItemViewHolder) {
