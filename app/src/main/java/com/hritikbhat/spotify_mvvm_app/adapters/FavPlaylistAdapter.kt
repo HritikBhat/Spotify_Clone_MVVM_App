@@ -2,6 +2,7 @@ package com.hritikbhat.spotify_mvvm_app.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -64,7 +65,6 @@ class FavPlaylistAdapter : RecyclerView.Adapter<FavPlaylistAdapter.ViewHolder>()
             }
 
             binding.favPlaylistItemLayout.setOnClickListener {
-                //Toast.makeText(binding.root.context,"Clicked",Toast.LENGTH_LONG).show()
                 val plid = item.plid
                 val pname = item.plname
                 val aname = item.aname

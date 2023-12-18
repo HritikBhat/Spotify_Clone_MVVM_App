@@ -14,8 +14,11 @@ import com.hritikbhat.spotify_mvvm_app.ui.fragments.FavouriteSubFragments.FavPla
 import com.hritikbhat.spotify_mvvm_app.ui.fragments.FavouriteSubFragments.FavPodcastFragment
 
 class FavouritesFragment : Fragment() {
-    lateinit var binding: FragmentFavouritesBinding
 
+
+    companion object{
+        lateinit var binding: FragmentFavouritesBinding
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
