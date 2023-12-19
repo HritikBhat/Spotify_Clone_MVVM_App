@@ -72,7 +72,7 @@ fun setSongPosition(increment: Boolean){
 fun exitApplication(){
     if(PlayActivity.mediaPlayerService != null){
         //PlayActivity.mediaPlayerService !!.audioManager.abandonAudioFocus(PlayActivity.mediaPlayerService
-        PlayActivity.handler.removeCallbacksAndMessages(null)
+        PlayActivity.updateSeekBarJob!!.cancel()
         PlayActivity.mediaPlayerService !!.mediaPlayer!!.stop()
         PlayActivity.mediaPlayerService !!.mediaPlayer!!.release()
         PlayActivity.mediaPlayerService!!.mediaPlayer = null

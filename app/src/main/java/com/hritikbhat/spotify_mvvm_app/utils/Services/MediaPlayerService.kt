@@ -63,12 +63,6 @@ class MediaPlayerService: Service() {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
 
-//        val intent = Intent(baseContext, PlayActivity :: class.java)
-//        intent.putExtra("index", PlayerActivity.songPosition)
-//        intent.putExtra( name: "class", value: "NowPlaying")
-//        val contextIntent = PendingIntent.getActivity(this,0, intent, flags: 0)
-
-
         val prevIntent = Intent(baseContext, NotificationReceiver::class.java).setAction(ApplicationClass.PREVIOUS)
         prevPendingIntent = PendingIntent.getBroadcast(baseContext, 0, prevIntent, flag)
 
