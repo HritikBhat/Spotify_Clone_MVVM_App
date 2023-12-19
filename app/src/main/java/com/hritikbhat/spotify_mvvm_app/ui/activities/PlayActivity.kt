@@ -87,6 +87,25 @@ class PlayActivity : AppCompatActivity(),ServiceConnection ,AddToPlaylistAdapter
     private val MYPREFSNAME: String = "MY_PREFS"
 
 
+    override fun onResume() {
+        super.onResume()
+        try {
+            if (mediaPlayerService!=null){
+                if (mediaPlayerService!!.mediaPlayer?.isPlaying!!){
+                    btnPlayPause.setImageResource(R.drawable.ic_pause)
+                    mediaPlayerService!!.showNotification(R.drawable.ic_pause)
+                }
+                else{
+                    btnPlayPause.setImageResource(R.drawable.ic_play)
+                    mediaPlayerService!!.showNotification(R.drawable.ic_play)
+                }
+            }
+        }catch (e:Exception){
+
+        }
+
+    }
+
     private fun setLayout(){
         binding.seekBar.progress = 0
         btnPlayPause = binding.playPauseBtn
@@ -482,11 +501,9 @@ class PlayActivity : AppCompatActivity(),ServiceConnection ,AddToPlaylistAdapter
             viewModel.viewModelScope.launch {
                 setInitForAddToPlay(sid.toString())
             }
-
         }
 
         binding.likeSong.setOnClickListener {
-
 
             if (isFavSong) {
 
