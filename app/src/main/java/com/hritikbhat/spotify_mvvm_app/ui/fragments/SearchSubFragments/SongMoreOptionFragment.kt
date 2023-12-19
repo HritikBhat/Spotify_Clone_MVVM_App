@@ -1,5 +1,6 @@
 package com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments
 
+import android.content.ContentValues
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -142,6 +144,22 @@ class SongMoreOptionFragment : Fragment() {
                 }
             }
         })
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            requireActivity(),
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    Log.d(ContentValues.TAG, "Fragment back pressed invoked")
+                    // Do custom work here
+
+                    // if you want onBackPressed() to be called as normal afterwards
+                    if (isEnabled) {
+                        isEnabled = false
+                        findNavController().popBackStack()
+                    }
+                }
+            }
+        )
 
         binding.songMoreOptionBackBtn.setOnClickListener{
             findNavController().popBackStack()

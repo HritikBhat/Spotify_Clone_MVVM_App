@@ -1,5 +1,6 @@
 package com.hritikbhat.spotify_mvvm_app.ui.Fragments.FavouritePlaylistSubFragments
 
+import android.content.ContentValues
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -8,21 +9,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.hritikbhat.spotify_mvvm_app.R
-import com.hritikbhat.spotify_mvvm_app.adapters.PlaylistAdapter
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentCustomPlaylistMoreOptionBinding
-import com.hritikbhat.spotify_mvvm_app.databinding.FragmentFavPlaylistBinding
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentFavouritesBinding
 import com.hritikbhat.spotify_mvvm_app.models.AddSongPlaylistQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavTransactionResp
 import com.hritikbhat.spotify_mvvm_app.models.OperationResult
-import com.hritikbhat.spotify_mvvm_app.models.Song
-import com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.ShowPlaylistSongsFragmentArgs
 import com.hritikbhat.spotify_mvvm_app.ui.fragments.FavouritesFragment
 import com.hritikbhat.spotify_mvvm_app.viewModels.SubFragmentsViewModels.FavPlaylistViewModel
 import kotlinx.coroutines.launch
@@ -32,9 +30,7 @@ class CustomPlaylistMoreOptionFragment : Fragment(){
     private lateinit var viewModel: FavPlaylistViewModel
     private lateinit var binding: FragmentCustomPlaylistMoreOptionBinding
     private lateinit var binding2:FragmentFavouritesBinding
-
     private lateinit var sharedPref: SharedPreferences
-
     private val MY_PREFS_NAME: String = "MY_PREFS"
     private lateinit var curr_passHash:String
 
@@ -75,6 +71,22 @@ class CustomPlaylistMoreOptionFragment : Fragment(){
             }
 
         })
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            requireActivity(),
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    Log.d(ContentValues.TAG, "Fragment back pressed invoked")
+                    // Do custom work here
+
+                    // if you want onBackPressed() to be called as normal afterwards
+                    if (isEnabled) {
+                        isEnabled = false
+                        findNavController().popBackStack()
+                    }
+                }
+            }
+        )
 
 
         return binding.root

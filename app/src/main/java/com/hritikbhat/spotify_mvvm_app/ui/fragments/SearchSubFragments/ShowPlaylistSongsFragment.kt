@@ -1,5 +1,6 @@
 package com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments
 
+import android.content.ContentValues
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -59,7 +61,14 @@ class ShowPlaylistSongsFragment : Fragment(),PlaylistAdapter.OnItemClickListener
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_show_playlist_songs, container, false)
-        binding2 = FavouritesFragment.binding
+
+        try {
+            binding2 = FavouritesFragment.binding
+            binding2.tabLayout.visibility = View.GONE
+            binding2.viewPager.isUserInputEnabled = false
+        }catch (e:Exception){
+        }
+
 
         // Initialize the ViewModel
         viewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
@@ -75,8 +84,7 @@ class ShowPlaylistSongsFragment : Fragment(),PlaylistAdapter.OnItemClickListener
 
         val showPlaylistSongsFragmentArgs = ShowPlaylistSongsFragmentArgs.fromBundle(requireArguments())
 
-        binding2.tabLayout.visibility = View.GONE
-        binding2.viewPager.isUserInputEnabled = false
+
 
         playlistData = showPlaylistSongsFragmentArgs.playlistObjData
 
@@ -84,6 +92,22 @@ class ShowPlaylistSongsFragment : Fragment(),PlaylistAdapter.OnItemClickListener
         viewModel.viewModelScope.launch {
             getPlaylistDetails(playlistData.plname,playlistData.aname,playlistData.pltype,PlayListQuery(playlistData.plid.toString(),curr_passHash))
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            requireActivity(),
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    Log.d(ContentValues.TAG, "Fragment back pressed invoked")
+                    // Do custom work here
+
+                    // if you want onBackPressed() to be called as normal afterwards
+                    if (isEnabled) {
+                        isEnabled = false
+                        onBackButtonClicked()
+                    }
+                }
+            }
+        )
 
         return binding.root
     }
@@ -124,8 +148,10 @@ class ShowPlaylistSongsFragment : Fragment(),PlaylistAdapter.OnItemClickListener
     }
 
     override fun onBackButtonClicked() {
-        binding2.tabLayout.visibility = View.VISIBLE
-        binding2.viewPager.isUserInputEnabled = true
+        if (::binding2.isInitialized){
+            binding2.tabLayout.visibility = View.VISIBLE
+            binding2.viewPager.isUserInputEnabled = true
+        }
         findNavController().popBackStack()
     }
 
