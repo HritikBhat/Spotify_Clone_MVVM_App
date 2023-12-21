@@ -93,5 +93,6 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$navigationVersion")
 
+//    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.8.1")
 
 }

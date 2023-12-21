@@ -13,7 +13,4 @@ object RetrofitHelper {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
-
-    // Create an instance of your ApiService using the Retrofit instance
-    //val apiService: ApiService = retrofit.create(ApiService::class.java)
 }

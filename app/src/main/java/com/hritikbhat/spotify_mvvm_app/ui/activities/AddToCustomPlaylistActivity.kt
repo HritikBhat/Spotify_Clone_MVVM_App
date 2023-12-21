@@ -3,27 +3,28 @@ package com.hritikbhat.spotify_mvvm_app.ui.Activities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hritikbhat.spotify_mvvm_app.R
 import com.hritikbhat.spotify_mvvm_app.adapters.AddToPlaylistAdapter
 import com.hritikbhat.spotify_mvvm_app.databinding.ActivityAddToCustomPlaylistBinding
-import com.hritikbhat.spotify_mvvm_app.databinding.ActivitySongMoreOptionPlayBinding
 import com.hritikbhat.spotify_mvvm_app.models.AddSongPlaylistQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavPlaylistQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavTransactionResp
 import com.hritikbhat.spotify_mvvm_app.models.OperationResult
 import com.hritikbhat.spotify_mvvm_app.models.favPlaylists
 import com.hritikbhat.spotify_mvvm_app.ui.activities.PlayActivity
+import com.hritikbhat.spotify_mvvm_app.viewModels.FavouritesViewModel
 import kotlinx.coroutines.launch
 
 class AddToCustomPlaylistActivity : AppCompatActivity(),AddToPlaylistAdapter.OnItemClickListener {
     private lateinit var binding: ActivityAddToCustomPlaylistBinding
     private val addToPlaylistAdapter = AddToPlaylistAdapter()
     private lateinit var sid:String
+    private lateinit var viewModel: FavouritesViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +35,10 @@ class AddToCustomPlaylistActivity : AppCompatActivity(),AddToPlaylistAdapter.OnI
 
         sid = bundle?.getString("sid").toString()
 
+        viewModel = ViewModelProvider(this)[FavouritesViewModel::class.java]
 
-        PlayActivity.viewModel.viewModelScope.launch {
+
+        viewModel.viewModelScope.launch {
             setInitForAddToPlay(sid)
         }
 
@@ -46,7 +49,7 @@ class AddToCustomPlaylistActivity : AppCompatActivity(),AddToPlaylistAdapter.OnI
         //binding.songOptionImg.setImageResource(R.drawable.ic_fav_unselected_white)
 
         val operationResult: OperationResult<favPlaylists> =
-            PlayActivity.viewModel.getUserCustomFavPlaylist(FavPlaylistQuery(PlayActivity.curr_passHash,"-1"))
+            viewModel.getUserCustomFavPlaylist(FavPlaylistQuery(PlayActivity.currPassHash,"-1"))
 
         when (operationResult) {
             is OperationResult.Success -> {
@@ -71,8 +74,8 @@ class AddToCustomPlaylistActivity : AppCompatActivity(),AddToPlaylistAdapter.OnI
 
     override fun onSelectingAddToPlaylistItemClick(plid: String, sid: String) {
         //AddFavSong
-        PlayActivity.viewModel.viewModelScope.launch {
-            addSongToCustomPlaylist(PlayActivity.curr_passHash,plid,sid)
+        viewModel.viewModelScope.launch {
+            addSongToCustomPlaylist(PlayActivity.currPassHash,plid,sid)
         }
     }
 
@@ -82,7 +85,7 @@ class AddToCustomPlaylistActivity : AppCompatActivity(),AddToPlaylistAdapter.OnI
 
 
     private suspend fun addSongToCustomPlaylist(currPassHash: String, plid: String, sid: String) {
-        val operationResult: OperationResult<FavTransactionResp> = PlayActivity.viewModel.addSongToPlaylist(
+        val operationResult: OperationResult<FavTransactionResp> = viewModel.addSongToPlaylist(
             AddSongPlaylistQuery(currPassHash,plid,sid)
         )
 

@@ -19,7 +19,6 @@ import com.hritikbhat.spotify_mvvm_app.R
 import com.hritikbhat.spotify_mvvm_app.Utils.SharedPreferenceInstance
 import com.hritikbhat.spotify_mvvm_app.Utils.TransactionTypes
 import com.hritikbhat.spotify_mvvm_app.adapters.PlaylistAdapter
-import com.hritikbhat.spotify_mvvm_app.databinding.FragmentFavouritesBinding
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentShowPlaylistSongsBinding
 import com.hritikbhat.spotify_mvvm_app.models.FavPlaylistQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavTransactionResp
@@ -36,18 +35,26 @@ import kotlinx.coroutines.launch
 class ShowPlaylistSongsFragment : Fragment(),PlaylistAdapter.OnItemClickListener {
 
     private lateinit var binding: FragmentShowPlaylistSongsBinding
-    private lateinit var binding2: FragmentFavouritesBinding
 
-    private val playlistAdapter = PlaylistAdapter()
+    private var _playlistAdapter: PlaylistAdapter? = null
+    private val playlistAdapter get() = _playlistAdapter!!
     private lateinit var sharedPref: SharedPreferences
     private lateinit var currPassHash:String
-
-
+    private var isFragmentActive = false
     private lateinit var viewModel: SearchViewModel
     private lateinit var viewModel2: FavPlaylistViewModel
 
     private lateinit var playlistData: Playlist
 
+    override fun onResume() {
+        isFragmentActive=true
+        super.onResume()
+    }
+
+    override fun onPause() {
+        isFragmentActive=false
+        super.onPause()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,10 +62,10 @@ class ShowPlaylistSongsFragment : Fragment(),PlaylistAdapter.OnItemClickListener
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_show_playlist_songs, container, false)
 
+        _playlistAdapter = PlaylistAdapter()
         try {
-            binding2 = FavouritesFragment.binding
-            binding2.tabLayout.visibility = View.GONE
-            binding2.viewPager.isUserInputEnabled = false
+            FavouritesFragment.tabLayout?.visibility = View.GONE
+            FavouritesFragment.viewPager?.isUserInputEnabled = false
         }catch (_:Exception){
         }
 
@@ -96,6 +103,7 @@ class ShowPlaylistSongsFragment : Fragment(),PlaylistAdapter.OnItemClickListener
                         isEnabled = false
                         onBackButtonClicked()
                     }
+
                 }
             }
         )
@@ -123,10 +131,6 @@ class ShowPlaylistSongsFragment : Fragment(),PlaylistAdapter.OnItemClickListener
                 playlistAdapter.setPlaylistItems(plq.plid,pname,aname,ptype, playListDetails.isFav,playListDetails)
                 binding.playlistRC.adapter = playlistAdapter
                 playlistAdapter.setOnItemClickListener(this)
-//                binding.searchFragmentStartLayout.visibility=View.GONE
-//                binding.searchLayout.visibility = View.GONE
-//                binding.playlistRC.visibility = View.VISIBLE
-//                binding.addToPlaylistRC.visibility=View.GONE
                 // Process searchList here
             }
             is OperationResult.Error -> {
@@ -139,11 +143,11 @@ class ShowPlaylistSongsFragment : Fragment(),PlaylistAdapter.OnItemClickListener
     }
 
     override fun onBackButtonClicked() {
-        if (::binding2.isInitialized){
-            binding2.tabLayout.visibility = View.VISIBLE
-            binding2.viewPager.isUserInputEnabled = true
+        FavouritesFragment.tabLayout?.visibility = View.VISIBLE
+        FavouritesFragment.viewPager?.isUserInputEnabled = true
+        if (isFragmentActive){
+            findNavController().popBackStack()
         }
-        findNavController().popBackStack()
     }
 
     override fun onFavPlaylistButtonClick(isFav: Boolean,plid:Int) {
@@ -216,6 +220,11 @@ class ShowPlaylistSongsFragment : Fragment(),PlaylistAdapter.OnItemClickListener
             //Move to Album Playlist More Option
         }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _playlistAdapter = null
     }
 
 
