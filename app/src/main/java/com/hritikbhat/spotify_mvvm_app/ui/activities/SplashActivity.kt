@@ -41,7 +41,7 @@ class SplashActivity : AppCompatActivity() {
 
         sharedPref = getSharedPreferences()
 
-        loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
+        loginViewModel = ViewModelProvider(this)[LoginViewModel::class.java]
 
         loginViewModel.viewModelScope.launch {
             delay(1500)
