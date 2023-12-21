@@ -29,7 +29,6 @@ class CustomPlaylistMoreOptionFragment : Fragment(){
 
     private lateinit var viewModel: FavPlaylistViewModel
     private lateinit var binding: FragmentCustomPlaylistMoreOptionBinding
-    private lateinit var binding2:FragmentFavouritesBinding
     private lateinit var sharedPref: SharedPreferences
     private lateinit var currPassHash:String
 
@@ -41,7 +40,6 @@ class CustomPlaylistMoreOptionFragment : Fragment(){
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_custom_playlist_more_option, container, false)
 
-        binding2 = FavouritesFragment.binding
 
 
         viewModel = ViewModelProvider(this)[FavPlaylistViewModel::class.java]
@@ -103,8 +101,8 @@ class CustomPlaylistMoreOptionFragment : Fragment(){
                 if (favTransactionResp.success){
                     //Go back to favPlaylistStart page
 
-                    binding2.tabLayout.visibility=View.VISIBLE
-                    binding2.viewPager.isUserInputEnabled = true
+                    FavouritesFragment.tabLayout?.visibility=View.VISIBLE
+                    FavouritesFragment.viewPager?.isUserInputEnabled = true
 
                     findNavController().popBackStack()
                     findNavController().popBackStack()

@@ -27,7 +27,8 @@ import com.hritikbhat.spotify_mvvm_app.viewModels.SearchViewModel
 import kotlinx.coroutines.launch
 
 class DoSearchFragment : Fragment(),SearchAdapter.OnItemClickListener {
-    private lateinit var binding: FragmentDoSearchBinding
+    private var _binding: FragmentDoSearchBinding?=null
+    private val binding get() = _binding!!
     private val searchRCAdapter = SearchAdapter()
 
     private lateinit var sharedPref: SharedPreferences
@@ -38,6 +39,8 @@ class DoSearchFragment : Fragment(),SearchAdapter.OnItemClickListener {
     private val handler = Handler(Looper.myLooper()!!)
 
     private lateinit var searchNavController: NavController
+
+
 
 
 
@@ -55,8 +58,7 @@ class DoSearchFragment : Fragment(),SearchAdapter.OnItemClickListener {
     ): View {
         // Inflate the layout for this fragment
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_do_search, container, false)
-
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_do_search, container, false)
 
         // Initialize the ViewModel
         viewModel = ViewModelProvider(this)[SearchViewModel::class.java]
@@ -96,9 +98,6 @@ class DoSearchFragment : Fragment(),SearchAdapter.OnItemClickListener {
                     binding.searchRc.visibility = View.GONE
                     binding.notFoundLayout.visibility = View.GONE
                 }
-
-
-
 
                 // Schedule data processing after 2 seconds
                 handler.postDelayed({
@@ -154,8 +153,7 @@ class DoSearchFragment : Fragment(),SearchAdapter.OnItemClickListener {
 
     override fun onSearchItemClick(plid: Int, pname: String, aname: String, ptype: Int) {
         viewModel.viewModelScope.launch {
-//            getPlaylistDetails(pname,aname,ptype, PlayListQuery(plid.toString(),currPassHash))
-            //Send to ShowPlaylistSongsFragment
+           //Send to ShowPlaylistSongsFragment
             val playlist = Playlist(plid,pname,ptype,aname)
 
             val showPlaylistSongsFragmentAction = DoSearchFragmentDirections.actionDoSearchFragmentToShowPlaylistSongsFragment(playlist)
@@ -164,28 +162,9 @@ class DoSearchFragment : Fragment(),SearchAdapter.OnItemClickListener {
         }
     }
 
-//    suspend  fun getPlaylistDetails(pname: String, aname: String, ptype: Int, plq: PlayListQuery){
-//        val operationResult: OperationResult<PlayListDetail> = viewModel.getPlaylistDetails(plq)
-//
-//        when (operationResult) {
-//            is OperationResult.Success -> {
-//                // Operation was successful, handle the result
-//
-//                val playListDetails : PlayListDetail = operationResult.data
-//                Log.d("CHEEZY NOTIFICATION","API plid value: ${plq.plid}")
-//                playlistAdapter.setPlaylistItems(plq.plid,pname,aname,playListDetails.pltype, playListDetails.isFav,playListDetails)
-//                binding.searchFragmentStartLayout.visibility=View.GONE
-//                binding.searchLayout.visibility = View.GONE
-//                binding.playlistRC.visibility = View.VISIBLE
-//                binding.addToPlaylistRC.visibility=View.GONE
-//                // Process searchList here
-//            }
-//            is OperationResult.Error -> {
-//                // An error occurred, handle the error
-//                val errorMessage = operationResult.message
-//                Log.e("ERROR", errorMessage)
-//                // Handle the error, for example, display an error message to the user
-//            }
-//        }
-//    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.unbind()
+        _binding = null
+    }
 }

@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
 import com.hritikbhat.spotify_mvvm_app.R
@@ -18,6 +19,7 @@ import com.hritikbhat.spotify_mvvm_app.ui.activities.PlayActivity
 import com.hritikbhat.spotify_mvvm_app.ui.activities.PlayActivity.Companion.isFav
 import com.hritikbhat.spotify_mvvm_app.ui.activities.PlayActivity.Companion.songListArr
 import com.hritikbhat.spotify_mvvm_app.utils.Retrofit.RetrofitHelper
+import com.hritikbhat.spotify_mvvm_app.viewModels.FavouritesViewModel
 import kotlinx.coroutines.launch
 
 class SongMoreOptionPlayActivity : AppCompatActivity() {
@@ -25,6 +27,7 @@ class SongMoreOptionPlayActivity : AppCompatActivity() {
 
     private lateinit var songMoreOptionIntent: Intent
     private var pos = -1
+    private lateinit var viewModel: FavouritesViewModel
 
 
     override fun onResume() {
@@ -39,6 +42,7 @@ class SongMoreOptionPlayActivity : AppCompatActivity() {
 
         binding.songOptionImg.setImageResource(R.drawable.ic_fav_unselected_white)
 
+        viewModel = ViewModelProvider(this)[FavouritesViewModel::class.java]
 
         this.songMoreOptionIntent = intent
 
@@ -77,7 +81,7 @@ class SongMoreOptionPlayActivity : AppCompatActivity() {
             if (isFavSong) {
 
                 //DeleteFavSong
-                PlayActivity.viewModel.viewModelScope.launch {
+                viewModel.viewModelScope.launch {
                     setFavSongStatus(
                         FavSongQuery(PlayActivity.currPassHash, songListArr[pos].sid.toString()),
                         TransactionTypes.DELETE_TRANSACTION
@@ -90,7 +94,7 @@ class SongMoreOptionPlayActivity : AppCompatActivity() {
             } else {
 
                 //AddFavSong
-                PlayActivity.viewModel.viewModelScope.launch {
+                viewModel.viewModelScope.launch {
                     setFavSongStatus(
                         FavSongQuery(PlayActivity.currPassHash, songListArr[pos].sid.toString()),
                         TransactionTypes.INSERT_TRANSACTION
@@ -106,9 +110,9 @@ class SongMoreOptionPlayActivity : AppCompatActivity() {
 
     private suspend  fun setFavSongStatus(fQ: FavSongQuery, transType:TransactionTypes){
         val operationResult: OperationResult<FavTransactionResp> = if (transType==TransactionTypes.INSERT_TRANSACTION){
-            PlayActivity.viewModel.addFavSong(fQ)
+            viewModel.addFavSong(fQ)
         } else{
-            PlayActivity.viewModel.removeFavSong(fQ)
+            viewModel.removeFavSong(fQ)
         }
 
         when (operationResult) {

@@ -15,17 +15,13 @@ import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.hritikbhat.spotify_mvvm_app.models.FavSongQuery
 import com.hritikbhat.spotify_mvvm_app.R
 import com.hritikbhat.spotify_mvvm_app.utils.Retrofit.RetrofitHelper.BASE_URL
 import com.hritikbhat.spotify_mvvm_app.ui.activities.HomeActivity
 import com.hritikbhat.spotify_mvvm_app.ui.activities.PlayActivity
-import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 
@@ -138,7 +134,6 @@ class MediaPlayerService: Service() {
             PlayActivity.mediaPlayerService!!.mediaPlayer!!.reset()
             PlayActivity.mediaPlayerService!!.mediaPlayer?.setDataSource("${BASE_URL + "data/music/"}${PlayActivity.songListArr[PlayActivity.position].sid}.mp3")
             PlayActivity.mediaPlayerService!!.mediaPlayer!!.prepare()
-            PlayActivity.binding.playPauseBtn.setImageResource(R.drawable.ic_pause)
             PlayActivity.mediaPlayerService!!.mediaPlayer?.setOnCompletionListener {
                 playNextTrack()
             }
@@ -166,35 +161,11 @@ class MediaPlayerService: Service() {
             }
         }
         Log.d("CHEEZY MUSIC POSITION","Index: ${PlayActivity.position}")
-        PlayActivity.binding.startTimeText.text= getString(R.string.startTime_MMSS)
         PlayActivity.mediaPlayerService!!.createMediaPlayer()
-        Glide.with(this)
-            . load("${BASE_URL +"data/img/playlist/"}${PlayActivity.songListArr[PlayActivity.position].albumId}.jpg")
-            .apply(RequestOptions().placeholder(R.drawable.playlist_default_img).centerCrop())
-            .into(PlayActivity.binding.playMusicImage)
-
-        PlayActivity.viewModel.viewModelScope.launch {
-            PlayActivity.viewModel.addRecentSong(FavSongQuery(PlayActivity.currPassHash,PlayActivity.songListArr[PlayActivity.position].sid.toString()))
-        }
         PlayActivity.mediaPlayerService!!.showNotification(R.drawable.ic_pause)
-
-        if (PlayActivity.songListArr[PlayActivity.position].isFav){
-            PlayActivity.binding.favouriteBtn.setBackgroundResource(R.drawable.ic_fav_selected_white)
-        }
-        else{
-            PlayActivity.binding.favouriteBtn.setBackgroundResource(R.drawable.ic_fav_unselected_white)
-        }
-
-        PlayActivity.binding.songNameTT.text = PlayActivity.songListArr[PlayActivity.position].sname
-        PlayActivity.binding.songArtistsTT.text = PlayActivity.songListArr[PlayActivity.position].artist_name_arr.joinToString(", ")
-        createMediaPlayer()
         PlayActivity.isPlaying = true
         PlayActivity.mediaPlayerService !!. mediaPlayer !!. start()
         PlayActivity.mediaPlayerService !!. showNotification(R.drawable.ic_pause)
-        PlayActivity.binding.playPauseBtn.setImageResource(R.drawable.ic_pause)
-
-
-
     }
 
 }

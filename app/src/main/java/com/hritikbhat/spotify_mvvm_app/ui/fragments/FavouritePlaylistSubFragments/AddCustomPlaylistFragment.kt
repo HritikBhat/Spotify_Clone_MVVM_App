@@ -26,7 +26,6 @@ import kotlinx.coroutines.launch
 class AddCustomPlaylistFragment : Fragment() {
     private lateinit var viewModel: FavPlaylistViewModel
     private lateinit var binding: FragmentAddCustomPlaylistBinding
-
     private lateinit var sharedPref: SharedPreferences
     private lateinit var currPassHash:String
 

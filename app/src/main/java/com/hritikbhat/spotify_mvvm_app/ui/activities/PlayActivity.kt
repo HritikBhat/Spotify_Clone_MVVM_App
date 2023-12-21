@@ -1,6 +1,5 @@
 package com.hritikbhat.spotify_mvvm_app.ui.activities
 
-import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
@@ -9,7 +8,6 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -43,7 +41,6 @@ import kotlinx.coroutines.withContext
 
 class PlayActivity : AppCompatActivity(),ServiceConnection {
     
-    private lateinit var btnPlayPause: ImageView
     private var imgUrl = BASE_URL+"data/img/playlist/"
     private lateinit var intent: Intent
     private var sid: Int = 0
@@ -56,6 +53,10 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
 
     private lateinit var sharedPref:SharedPreferences
 
+    private lateinit var binding: ActivityPlayBinding
+
+    private lateinit var viewModel: FavouritesViewModel
+
 
     companion object {
         var updateSeekBarJob:Job? = null
@@ -67,11 +68,7 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
         var isFav:Boolean = false
         lateinit var artistArrString: String
         var mediaPlayerService : MediaPlayerService? = null
-        @SuppressLint("StaticFieldLeak")
-        lateinit var binding: ActivityPlayBinding
         var onShuffle:Boolean = false
-        @SuppressLint("StaticFieldLeak")
-        lateinit var viewModel: FavouritesViewModel
         lateinit var currPassHash:String
     }
 
@@ -88,7 +85,7 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
 
             if (mediaPlayerService!=null){
                 if (mediaPlayerService!!.mediaPlayer?.isPlaying!!){
-                    btnPlayPause.setImageResource(R.drawable.ic_pause)
+                    binding.playPauseBtn.setImageResource(R.drawable.ic_pause)
                     mediaPlayerService!!.showNotification(R.drawable.ic_pause)
                 }
                 else{
@@ -96,7 +93,7 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
                             updateSeekBarUI()
                         }
 
-                    btnPlayPause.setImageResource(R.drawable.ic_play)
+                    binding.playPauseBtn.setImageResource(R.drawable.ic_play)
                     mediaPlayerService!!.showNotification(R.drawable.ic_play)
                 }
             }
@@ -107,7 +104,6 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
 
     private fun setLayout(){
         binding.seekBar.progress = 0
-        btnPlayPause = binding.playPauseBtn
         currPassHash = sharedPref.getString("passHash", "").toString()
         sid = songListArr[position].sid
         isFav = songListArr[position].isFav
@@ -193,19 +189,19 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
             }
         }
 
-        btnPlayPause.setOnClickListener {
+        binding.playPauseBtn.setOnClickListener {
             if (mediaPlayerService!!.mediaPlayer?.isPlaying == true) {
                 Log.d("MediaPlayerStatus","Stopped From PlayActivity")
                 isPlaying=false
                 mediaPlayerService!!.mediaPlayer?.pause()
-                btnPlayPause.setImageResource(R.drawable.ic_play)
+                binding.playPauseBtn.setImageResource(R.drawable.ic_play)
                 mediaPlayerService!!.showNotification(R.drawable.ic_play)
 
             } else {
                 Log.d("MediaPlayerStatus","Started From PlayActivity")
                 isPlaying=true
                 mediaPlayerService!!.mediaPlayer?.start()
-                btnPlayPause.setImageResource(R.drawable.ic_pause)
+                binding.playPauseBtn.setImageResource(R.drawable.ic_pause)
                 mediaPlayerService!!.showNotification(R.drawable.ic_pause)
                 updateSeekBar()
 
@@ -253,7 +249,7 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
         Log.d("MediaPlayerStatus","Started From PlayActivity")
         mediaPlayerService!!.createMediaPlayer()
         mediaPlayerService!!.mediaPlayer?.start()
-        btnPlayPause.setImageResource(R.drawable.ic_pause)
+        binding.playPauseBtn.setImageResource(R.drawable.ic_pause)
         updateSeekBar()
     }
 
@@ -263,7 +259,7 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
             "NowPlaying"->{
 
                 setLayout()
-                btnPlayPause.setImageResource(R.drawable.ic_pause)
+                binding.playPauseBtn.setImageResource(R.drawable.ic_pause)
                 updateSeekBar()
             }
             "ActivityOrAdapterPlaying"->{
@@ -288,7 +284,7 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_play)
 
-        viewModel = ViewModelProvider(this).get(FavouritesViewModel::class.java)
+        viewModel = ViewModelProvider(this)[FavouritesViewModel::class.java]
 
         sharedPref = SharedPreferenceInstance(this).getSPInstance()
 
@@ -393,10 +389,10 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
                 val favTransactionResp : FavTransactionResp = operationResult.data
 
                 if (favTransactionResp.success){
-                    Toast.makeText(applicationContext,favTransactionResp.message,Toast.LENGTH_LONG).show()
+                    Toast.makeText(this,favTransactionResp.message,Toast.LENGTH_LONG).show()
                 }
                 else{
-                    Toast.makeText(applicationContext,favTransactionResp.message,Toast.LENGTH_LONG).show()
+                    Toast.makeText(this,favTransactionResp.message,Toast.LENGTH_LONG).show()
                 }
 
                 // Process searchList here

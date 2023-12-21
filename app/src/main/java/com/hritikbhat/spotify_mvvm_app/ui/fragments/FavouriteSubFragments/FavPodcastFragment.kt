@@ -28,14 +28,12 @@ import com.hritikbhat.spotify_mvvm_app.R
 import com.hritikbhat.spotify_mvvm_app.Utils.SharedPreferenceInstance
 import com.hritikbhat.spotify_mvvm_app.Utils.TransactionTypes
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentFavPodcastBinding
-import com.hritikbhat.spotify_mvvm_app.databinding.FragmentFavouritesBinding
 import com.hritikbhat.spotify_mvvm_app.ui.fragments.FavouritesFragment
 import kotlinx.coroutines.launch
 
 class FavPodcastFragment : Fragment(), FavPlaylistAdapter.OnItemClickListener,PlaylistAdapter.OnItemClickListener {
     private lateinit var viewModel: FavPodcastViewModel
     private lateinit var binding: FragmentFavPodcastBinding
-    private lateinit var binding2: FragmentFavouritesBinding
 
     private lateinit var context: Context
 
@@ -52,9 +50,7 @@ class FavPodcastFragment : Fragment(), FavPlaylistAdapter.OnItemClickListener,Pl
     ): View {
         // Inflate the layout using data binding
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_fav_podcast, container, false)
-        binding2 = FavouritesFragment.binding
         context = binding.root.context
-
         sharedPref = SharedPreferenceInstance(context).getSPInstance()
         currPassHash = sharedPref.getString("passHash", "").toString()
 
@@ -78,8 +74,8 @@ class FavPodcastFragment : Fragment(), FavPlaylistAdapter.OnItemClickListener,Pl
                             binding.noFavouriteLayout.visibility=View.GONE
                             binding.favPodcastRC.visibility = View.VISIBLE
                         }
-                        binding2.tabLayout.visibility = View.VISIBLE
-                        binding2.viewPager.isUserInputEnabled = true
+                        FavouritesFragment.tabLayout?.visibility = View.VISIBLE
+                        FavouritesFragment.viewPager?.isUserInputEnabled = true
                         binding.playlistRC.visibility = View.GONE
                     }
                 }
@@ -188,8 +184,8 @@ class FavPodcastFragment : Fragment(), FavPlaylistAdapter.OnItemClickListener,Pl
                 binding.noFavouriteLayout.visibility=View.GONE
                 binding.favPodcastRC.visibility = View.GONE
                 binding.playlistRC.visibility = View.VISIBLE
-                binding2.tabLayout.visibility = View.GONE
-                binding2.viewPager.isUserInputEnabled = false
+                FavouritesFragment.tabLayout?.visibility = View.GONE
+                FavouritesFragment.viewPager?.isUserInputEnabled = false
                 // Process searchList here
             }
             is OperationResult.Error -> {

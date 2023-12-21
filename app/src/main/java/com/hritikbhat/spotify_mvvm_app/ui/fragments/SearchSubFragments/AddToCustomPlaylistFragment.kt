@@ -64,8 +64,7 @@ class AddToCustomPlaylistFragment : Fragment(),AddToPlaylistAdapter.OnItemClickL
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(
-            requireActivity(),
-            object : OnBackPressedCallback(true) {
+            requireActivity(),object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     Log.d(TAG, "Fragment back pressed invoked")
                     // Do custom work here

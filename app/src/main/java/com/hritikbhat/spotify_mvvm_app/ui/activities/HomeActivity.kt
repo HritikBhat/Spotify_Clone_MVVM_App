@@ -10,17 +10,22 @@ import com.hritikbhat.spotify_mvvm_app.databinding.ActivityHomeBinding
 
 
 class HomeActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityHomeBinding
+    private var _binding: ActivityHomeBinding?= null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
+        _binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
 
         val navController = findNavController(this, R.id.nav_host_fragment)
 
         setupWithNavController(binding.bottomNavigation,navController)
+    }
 
-}
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 
 }

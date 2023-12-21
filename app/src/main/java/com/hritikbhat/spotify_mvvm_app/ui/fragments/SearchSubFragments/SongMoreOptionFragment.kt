@@ -43,6 +43,17 @@ class SongMoreOptionFragment : Fragment() {
 
     private lateinit var plid:String
     private var ptype:Int = 0
+    private var isFragmentEnabled = false
+
+    override fun onResume() {
+        super.onResume()
+        isFragmentEnabled = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        isFragmentEnabled = false
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -144,11 +155,13 @@ class SongMoreOptionFragment : Fragment() {
                 override fun handleOnBackPressed() {
                     Log.d(ContentValues.TAG, "Fragment back pressed invoked")
                     // Do custom work here
-
                     // if you want onBackPressed() to be called as normal afterwards
                     if (isEnabled) {
                         isEnabled = false
-                        findNavController().popBackStack()
+                        if (isFragmentEnabled){
+                            findNavController().popBackStack()
+                        }
+
                     }
                 }
             }

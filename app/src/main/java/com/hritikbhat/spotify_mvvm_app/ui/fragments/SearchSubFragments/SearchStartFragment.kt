@@ -20,15 +20,10 @@ import com.hritikbhat.spotify_mvvm_app.viewModels.SearchViewModel
 class SearchStartFragment : Fragment() {
 
     private lateinit var viewModel: SearchViewModel
-    private lateinit var binding: FragmentSearchStartBinding
-
-    private lateinit var context: Context
-
+    private var _binding: FragmentSearchStartBinding?=null
+    private val binding get() = _binding!!
     private lateinit var sharedPref: SharedPreferences
-    
     private lateinit var currPassHash:String
-
-    private lateinit var searchNavController: NavController
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,30 +31,16 @@ class SearchStartFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_start, container, false)
-
-        searchNavController = findNavController()
-
-
-
-        context = binding.root.context
-
-        sharedPref = SharedPreferenceInstance(context).getSPInstance()
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_start, container, false)
+        sharedPref = SharedPreferenceInstance(requireContext()).getSPInstance()
         currPassHash = sharedPref.getString("passHash", "").toString()
-
-
 
         // Initialize the ViewModel
         viewModel = ViewModelProvider(this)[SearchViewModel::class.java]
 
-        // Set the ViewModel in the binding
-//        binding.viewModel = viewModel
-//        binding.lifecycleOwner = viewLifecycleOwner
-
-
         binding.searchBtn.setOnClickListener{
             //Send To DoSearchFragment
-            searchNavController.navigate(R.id.action_searchStartFragment_to_doSearchFragment)
+            findNavController().navigate(R.id.action_searchStartFragment_to_doSearchFragment)
         }
 
         val genres = arrayListOf("Podcast", "New Releases", "Hindi", "Punjabi", "Tamil", "Telugu", "Pop", "Indie", "Trending",
@@ -67,11 +48,17 @@ class SearchStartFragment : Fragment() {
             "Classical")
 
         // Create an ArrayAdapter to populate the GridView
-        val gridAdapter = GridItemAdapter(context, genres)
+        val gridAdapter = GridItemAdapter(requireContext(), genres)
 
         binding.gridView.adapter = gridAdapter
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.unbind()
+        _binding = null
     }
 
 }

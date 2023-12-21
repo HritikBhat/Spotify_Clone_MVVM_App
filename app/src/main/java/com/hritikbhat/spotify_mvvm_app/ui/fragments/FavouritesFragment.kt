@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hritikbhat.spotify_mvvm_app.adapters.FavouriteSubFragmentAdapter
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentFavouritesBinding
@@ -15,16 +17,23 @@ import com.hritikbhat.spotify_mvvm_app.ui.fragments.FavouriteSubFragments.FavPod
 
 class FavouritesFragment : Fragment() {
 
+    private var _binding: FragmentFavouritesBinding? = null
+    private val binding get() = _binding!!
+
 
     companion object{
-        lateinit var binding: FragmentFavouritesBinding
+        var viewPager: ViewPager2? = null
+        var tabLayout: TabLayout? = null
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentFavouritesBinding.inflate(inflater, container, false)
+        _binding = FragmentFavouritesBinding.inflate(inflater, container, false)
+        viewPager = binding.viewPager
+        tabLayout = binding.tabLayout
         return binding.root
     }
 
@@ -43,19 +52,24 @@ class FavouritesFragment : Fragment() {
 
         // Bind the ViewPager2 with the TabLayout
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            if(position==0){
-                tab.text = "Playlists"
+            tab.text = when (position) {
+                0 -> "Playlists"
+                1 -> "Artists"
+                2 -> "Albums"
+                else -> "Podcasts"
             }
-            if(position==1){
-                tab.text = "Artists"
-            }
-            if(position==2){
-                tab.text = "Albums"
-            }
-            if(position==3){
-                tab.text = "Podcasts"
-            }
-
         }.attach()
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // Release the binding
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewPager = null
+        tabLayout = null
+    }
 }
+

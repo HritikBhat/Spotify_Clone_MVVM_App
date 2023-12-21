@@ -26,11 +26,11 @@ import kotlinx.coroutines.launch
 class HomeFragment : Fragment() {
 
     private lateinit var viewModel: HomeViewModel
-    private lateinit var binding: FragmentHomeBinding
+    private var _binding: FragmentHomeBinding?=null
+    private val binding get() = _binding!!
 
-    private lateinit var context: Context
-
-    private val recentRCAdapter = RecentAdapter()
+    private var _recentRCAdapter:RecentAdapter? = null
+    private val recentRCAdapter get() = _recentRCAdapter!!
 
     private lateinit var sharedPref: SharedPreferences
     private lateinit var currPassHash:String
@@ -47,12 +47,12 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout using data binding
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+
+        _recentRCAdapter = RecentAdapter()
 
         // Initialize the ViewModel
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
-
-        context= this.requireContext()
 
         sharedPref = SharedPreferenceInstance(requireContext()).getSPInstance()
         currPassHash = sharedPref.getString("passHash", "").toString()
@@ -60,7 +60,7 @@ class HomeFragment : Fragment() {
         val view = binding.root
 
         binding.homesSettingBtn.setOnClickListener{
-            startSettingActivity(context)
+            startSettingActivity(requireContext())
         }
 
         val layoutManager =
@@ -110,4 +110,15 @@ class HomeFragment : Fragment() {
         startActivity(intent)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _recentRCAdapter = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.unbind()
+        _binding = null
+        _recentRCAdapter = null
+    }
 }

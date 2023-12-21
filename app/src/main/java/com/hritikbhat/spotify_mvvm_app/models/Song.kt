@@ -78,7 +78,7 @@ fun exitApplication(){
         PlayActivity.mediaPlayerService!!.mediaPlayer = null
         PlayActivity.mediaPlayerService !!.stopForeground(STOP_FOREGROUND_REMOVE)
 //        PlayActivity.mediaPlayerService = null
-        (PlayActivity.binding.root.context as Activity).finish()
+//        (PlayActivity.binding.root.context as Activity).finish()
         NowPlaying.binding.root.visibility = View.GONE
 //        NowPlaying.binding.root.layoutParams.height = 0
 

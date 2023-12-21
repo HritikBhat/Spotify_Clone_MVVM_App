@@ -1,6 +1,5 @@
 package com.hritikbhat.spotify_mvvm_app.ui.Fragments.FavouriteAlbumSubFragments
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 
@@ -18,23 +17,19 @@ import com.hritikbhat.spotify_mvvm_app.R
 import com.hritikbhat.spotify_mvvm_app.Utils.SharedPreferenceInstance
 import com.hritikbhat.spotify_mvvm_app.adapters.FavPlaylistAdapter
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentFavouriteAlbumStartBinding
-import com.hritikbhat.spotify_mvvm_app.databinding.FragmentFavouritesBinding
 import com.hritikbhat.spotify_mvvm_app.models.FavPlaylistQuery
 import com.hritikbhat.spotify_mvvm_app.models.OperationResult
 import com.hritikbhat.spotify_mvvm_app.models.Playlist
 import com.hritikbhat.spotify_mvvm_app.models.favPlaylists
-import com.hritikbhat.spotify_mvvm_app.ui.fragments.FavouritesFragment
 import com.hritikbhat.spotify_mvvm_app.viewModels.SubFragmentsViewModels.FavAlbumViewModel
 import kotlinx.coroutines.launch
 
 class FavouriteAlbumStartFragment : Fragment(),FavPlaylistAdapter.OnItemClickListener {
     private lateinit var binding: FragmentFavouriteAlbumStartBinding
-    private val favPlaylistRCAdapter = FavPlaylistAdapter()
+    private var _favPlaylistRCAdapter:FavPlaylistAdapter? = null
+    private val favPlaylistRCAdapter get() = _favPlaylistRCAdapter!!
 
     private lateinit var viewModel: FavAlbumViewModel
-    private lateinit var binding2: FragmentFavouritesBinding
-
-    private lateinit var context: Context
 
 
     private lateinit var sharedPref: SharedPreferences
@@ -48,10 +43,9 @@ class FavouriteAlbumStartFragment : Fragment(),FavPlaylistAdapter.OnItemClickLis
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_favourite_album_start, container, false)
 
-        binding2 = FavouritesFragment.binding
-        context = binding.root.context
+        _favPlaylistRCAdapter = FavPlaylistAdapter()
 
-        sharedPref = SharedPreferenceInstance(context).getSPInstance()
+        sharedPref = SharedPreferenceInstance(requireContext()).getSPInstance()
         currPassHash = sharedPref.getString("passHash", "").toString()
         viewModel = ViewModelProvider(this).get(FavAlbumViewModel::class.java)
 
@@ -110,6 +104,11 @@ class FavouriteAlbumStartFragment : Fragment(),FavPlaylistAdapter.OnItemClickLis
 
             val showPlaylistSongsFragmentAction = FavouriteAlbumStartFragmentDirections.actionFavouriteAlbumStartFragmentToShowPlaylistSongsFragmentFavPlaylist(playlist)
             findNavController().navigate(showPlaylistSongsFragmentAction)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _favPlaylistRCAdapter = null
     }
 
 }
