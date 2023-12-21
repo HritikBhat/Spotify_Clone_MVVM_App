@@ -30,7 +30,7 @@ class NotificationReceiver: BroadcastReceiver() {
     }
 
     private fun playMusic(){
-        Log.d("PlayPause Btn","Status: ${PlayActivity.isPlaying}")
+        Log.d("MediaPlayerStatus","Started From Notification")
         PlayActivity.isPlaying = true
         PlayActivity.mediaPlayerService !!. mediaPlayer !!. start()
         PlayActivity.mediaPlayerService !!. showNotification(R.drawable.ic_pause)
@@ -39,6 +39,7 @@ class NotificationReceiver: BroadcastReceiver() {
     }
 
     private fun pauseMusic(){
+        Log.d("MediaPlayerStatus","Stopped From Notification")
         PlayActivity.isPlaying = false
         PlayActivity.mediaPlayerService !!. mediaPlayer !!.pause()
         PlayActivity.mediaPlayerService !!. showNotification(R.drawable.ic_play)
@@ -57,7 +58,7 @@ class NotificationReceiver: BroadcastReceiver() {
             .into(PlayActivity.binding.playMusicImage)
 
         viewModel.viewModelScope.launch {
-            viewModel.addRecentSong(FavSongQuery(PlayActivity.curr_passHash,PlayActivity.songListArr[PlayActivity.position].sid.toString()))
+            viewModel.addRecentSong(FavSongQuery(PlayActivity.currPassHash,PlayActivity.songListArr[PlayActivity.position].sid.toString()))
         }
         //PlayActivity.mediaPlayerService!!.showNotification(R.drawable.ic_pause)
 

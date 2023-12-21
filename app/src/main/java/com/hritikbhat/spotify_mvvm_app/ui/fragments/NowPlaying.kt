@@ -28,7 +28,7 @@ class NowPlaying : Fragment() {
         binding = FragmentPlayingNowBinding.bind(view)
         binding.root.visibility = View.GONE
         binding.nowPlayingPlayBtn.setOnClickListener {
-            if(PlayActivity.isPlaying) pauseMusic() else playMusic()
+            if(PlayActivity.mediaPlayerService?.mediaPlayer!!.isPlaying) pauseMusic() else playMusic()
         }
         binding.nowPlayingNextBtn.setOnClickListener {
             setSongPosition(increment = true)
@@ -76,12 +76,14 @@ class NowPlaying : Fragment() {
     }
 
     private fun playMusic(){
+        Log.d("MediaPlayerStatus","Started From NowPlaying")
         PlayActivity.isPlaying = true
         PlayActivity.mediaPlayerService!!.mediaPlayer!!.start()
         binding.nowPlayingPlayBtn.setImageResource(R.drawable.ic_pause)
         PlayActivity.mediaPlayerService!!.showNotification(R.drawable.ic_pause)
     }
     private fun pauseMusic(){
+        Log.d("MediaPlayerStatus","Stopped From NowPlaying")
         PlayActivity.isPlaying = false
         PlayActivity.mediaPlayerService!!.mediaPlayer!!.pause()
         binding.nowPlayingPlayBtn.setImageResource(R.drawable.ic_play)

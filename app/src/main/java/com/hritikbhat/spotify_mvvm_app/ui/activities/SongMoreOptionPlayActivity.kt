@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
 import com.hritikbhat.spotify_mvvm_app.R
+import com.hritikbhat.spotify_mvvm_app.Utils.TransactionTypes
 import com.hritikbhat.spotify_mvvm_app.databinding.ActivitySongMoreOptionPlayBinding
 import com.hritikbhat.spotify_mvvm_app.models.FavSongQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavTransactionResp
@@ -23,9 +24,6 @@ class SongMoreOptionPlayActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySongMoreOptionPlayBinding
 
     private lateinit var songMoreOptionIntent: Intent
-
-    private val INSERTTRANSACTION =1
-    private  val DELETETRANSACTION=0
     private var pos = -1
 
 
@@ -81,37 +79,33 @@ class SongMoreOptionPlayActivity : AppCompatActivity() {
                 //DeleteFavSong
                 PlayActivity.viewModel.viewModelScope.launch {
                     setFavSongStatus(
-                        FavSongQuery(PlayActivity.curr_passHash, songListArr[pos].sid.toString()),
-                        DELETETRANSACTION
+                        FavSongQuery(PlayActivity.currPassHash, songListArr[pos].sid.toString()),
+                        TransactionTypes.DELETE_TRANSACTION
                     )
                     isFav = false
                     songListArr[pos].isFav = isFav
 
                     binding.songOptionImg.setImageResource(R.drawable.ic_fav_unselected_white)
-                    //playlistAdapter.setSongFavStatus(pos,false)
-//                    binding.favouriteBtn.setBackgroundResource(R.drawable.ic_fav_selected_white)
                 }
             } else {
 
                 //AddFavSong
                 PlayActivity.viewModel.viewModelScope.launch {
                     setFavSongStatus(
-                        FavSongQuery(PlayActivity.curr_passHash, songListArr[pos].sid.toString()),
-                        INSERTTRANSACTION
+                        FavSongQuery(PlayActivity.currPassHash, songListArr[pos].sid.toString()),
+                        TransactionTypes.INSERT_TRANSACTION
                     )
                     isFav = true
                     songListArr[pos].isFav = isFav
                     binding.songOptionImg.setImageResource(R.drawable.ic_fav_selected_white)
-                    //playlistAdapter.setSongFavStatus(pos,true)
-//                    binding.favouriteBtn.setBackgroundResource(R.drawable.ic_fav_unselected_white)
                 }
             }
         }
         
     }
 
-    private suspend  fun setFavSongStatus(fQ: FavSongQuery, transType:Int){
-        val operationResult: OperationResult<FavTransactionResp> = if (transType==INSERTTRANSACTION){
+    private suspend  fun setFavSongStatus(fQ: FavSongQuery, transType:TransactionTypes){
+        val operationResult: OperationResult<FavTransactionResp> = if (transType==TransactionTypes.INSERT_TRANSACTION){
             PlayActivity.viewModel.addFavSong(fQ)
         } else{
             PlayActivity.viewModel.removeFavSong(fQ)

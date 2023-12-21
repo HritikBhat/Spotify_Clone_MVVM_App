@@ -15,18 +15,12 @@ class LoginViewModel : ViewModel() {
     private val apiService: ApiService = RetrofitHelper.getInstance().create(ApiService::class.java)
 
 
-    var loginManager = LoginManager(apiService)
+    private var loginManager = LoginManager(apiService)
 
-
-    fun doFirstTimeLogin(
-        sharedPref: SharedPreferences,
-        name: String,
-        email: String,
-        img_link: String
-    ) {
+    fun doFirstTimeLogin(sharedPref: SharedPreferences, name: String, email: String, imgLink: String) {
         viewModelScope.launch {
             Log.d("Status","doFirstTimeLogin started")
-            loginManager.doFirstTimeLogin(sharedPref, name, email, img_link)
+            loginManager.doFirstTimeLogin(sharedPref, name, email, imgLink)
         }
     }
 

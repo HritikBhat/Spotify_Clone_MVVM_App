@@ -14,7 +14,7 @@ class LoginManager(private val apiService: ApiService) {
 
     //When user logs in initially just after installing app
     suspend fun doFirstTimeLogin(sharedPref: SharedPreferences,
-                                 name: String, email: String, img_link: String
+                                 name: String, email: String, imgLink: String
     ) {
         val editor = sharedPref.edit()
 
@@ -22,7 +22,7 @@ class LoginManager(private val apiService: ApiService) {
             withContext(Dispatchers.Default) {
                 try {
                     ensureActive()
-                    val response = apiService.doLogin(LoginRequest(name, email, img_link))
+                    val response = apiService.doLogin(LoginRequest(name, email, imgLink))
                     if (response.body() != null) {
 
                         val auth: Auth? = response.body()
@@ -58,15 +58,15 @@ class LoginManager(private val apiService: ApiService) {
     suspend fun checkUserLoggedIn(sharedPref: SharedPreferences): Boolean{
 
         val editor = sharedPref.edit()
-        val curr_passHash = sharedPref.getString("passHash", "").toString()
+        val currPassHash = sharedPref.getString("passHash", "").toString()
 
         try {
             return withContext(Dispatchers.Default){
                 try {
-                    var userLoggedInStatus = false
+                    val userLoggedInStatus: Boolean
                     ensureActive()
-                    Log.d("CHEEZY_NOTIFICATION", curr_passHash)
-                    val response = apiService.checkUserLoggedIn(Auth(curr_passHash))
+                    Log.d("CHEEZY_NOTIFICATION", currPassHash)
+                    val response = apiService.checkUserLoggedIn(Auth(currPassHash))
                     userLoggedInStatus = if (response.body() != null) {
                         val auth: Auth? = response.body()
                         if (auth != null) {

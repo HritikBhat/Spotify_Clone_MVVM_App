@@ -7,7 +7,6 @@ import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.IBinder
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -18,22 +17,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.hritikbhat.spotify_mvvm_app.adapters.AddToPlaylistAdapter
-import com.hritikbhat.spotify_mvvm_app.models.AddSongPlaylistQuery
-import com.hritikbhat.spotify_mvvm_app.models.FavPlaylistQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavSongQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavTransactionResp
 import com.hritikbhat.spotify_mvvm_app.models.OperationResult
 import com.hritikbhat.spotify_mvvm_app.models.Song
-import com.hritikbhat.spotify_mvvm_app.models.favPlaylists
 import com.hritikbhat.spotify_mvvm_app.models.setSongPosition
 import com.hritikbhat.spotify_mvvm_app.R
-import com.hritikbhat.spotify_mvvm_app.utils.Retrofit.RetrofitHelper
+import com.hritikbhat.spotify_mvvm_app.Utils.SharedPreferenceInstance
+import com.hritikbhat.spotify_mvvm_app.Utils.TransactionTypes
 import com.hritikbhat.spotify_mvvm_app.utils.Retrofit.RetrofitHelper.BASE_URL
 import com.hritikbhat.spotify_mvvm_app.utils.Services.MediaPlayerService
 import com.hritikbhat.spotify_mvvm_app.viewModels.FavouritesViewModel
@@ -41,7 +35,6 @@ import com.hritikbhat.spotify_mvvm_app.databinding.ActivityPlayBinding
 import com.hritikbhat.spotify_mvvm_app.ui.Activities.SongMoreOptionPlayActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -49,13 +42,8 @@ import kotlinx.coroutines.withContext
 
 
 class PlayActivity : AppCompatActivity(),ServiceConnection {
-
-    private val INSERTTRANSACTION =1
-    private  val DELETETRANSACTION=0
-
-
+    
     private lateinit var btnPlayPause: ImageView
-    private var audioUrl = BASE_URL+"data/music/"
     private var imgUrl = BASE_URL+"data/img/playlist/"
     private lateinit var intent: Intent
     private var sid: Int = 0
@@ -64,12 +52,14 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
 
     private lateinit var extras: Bundle
 
-    private lateinit var sharedPref: SharedPreferences
     private val initTimeFormatMMSS = "00:00"
+
+    private lateinit var sharedPref:SharedPreferences
 
 
     companion object {
         var updateSeekBarJob:Job? = null
+        var updateSeekBarJobDefault:Job?=null
         lateinit var songListArr: ArrayList<Song>
         var position: Int = 0
         var isPlaying:Boolean = true
@@ -82,18 +72,12 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
         var onShuffle:Boolean = false
         @SuppressLint("StaticFieldLeak")
         lateinit var viewModel: FavouritesViewModel
-        lateinit var curr_passHash:String
+        lateinit var currPassHash:String
     }
-
-
-
-    private val MYPREFSNAME: String = "MY_PREFS"
-
 
     override fun onResume() {
         super.onResume()
         try {
-
             if (isFav){
                 binding.favouriteBtn.setBackgroundResource(R.drawable.ic_fav_selected_white)
             }
@@ -108,21 +92,23 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
                     mediaPlayerService!!.showNotification(R.drawable.ic_pause)
                 }
                 else{
-                    updateSeekBarUI()
+                        viewModel.viewModelScope.launch(Dispatchers.Main.immediate) {
+                            updateSeekBarUI()
+                        }
+
                     btnPlayPause.setImageResource(R.drawable.ic_play)
                     mediaPlayerService!!.showNotification(R.drawable.ic_play)
                 }
             }
-        }catch (e:Exception){
 
+        }catch (_:Exception){
         }
-
     }
 
     private fun setLayout(){
         binding.seekBar.progress = 0
         btnPlayPause = binding.playPauseBtn
-        curr_passHash = sharedPref.getString("passHash", "").toString()
+        currPassHash = sharedPref.getString("passHash", "").toString()
         sid = songListArr[position].sid
         isFav = songListArr[position].isFav
         albumId = songListArr[position].albumId
@@ -154,7 +140,7 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
             .into(binding.playMusicImage)
 
         viewModel.viewModelScope.launch {
-            addRecentSong(FavSongQuery(curr_passHash,sid.toString()))
+            addRecentSong(FavSongQuery(currPassHash,sid.toString()))
         }
 
 
@@ -163,21 +149,21 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
 
                 //DeleteFavSong
                 viewModel.viewModelScope.launch {
-                    setFavSongStatus(FavSongQuery(curr_passHash, sid.toString()), DELETETRANSACTION)
+                    setFavSongStatus(FavSongQuery(currPassHash, sid.toString()), TransactionTypes.DELETE_TRANSACTION)
                     binding.favouriteBtn.setBackgroundResource(R.drawable.ic_fav_unselected_white)
                     isFav = false
-                    Log.d("Fav Flag gone to ","$isFav")
+                    
                 }
             } else {
 
                 //AddFavSong
                 viewModel.viewModelScope.launch {
-                    setFavSongStatus(FavSongQuery(curr_passHash, sid.toString()), INSERTTRANSACTION)
+                    setFavSongStatus(FavSongQuery(currPassHash, sid.toString()), TransactionTypes.INSERT_TRANSACTION)
                     binding.favouriteBtn.setBackgroundResource(R.drawable.ic_fav_selected_white)
                     isFav = true
-                    Log.d("Fav Flag gone to ","$isFav")
                 }
             }
+            Log.d("Fav Flag gone to ","$isFav")
         }
 
 
@@ -209,16 +195,20 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
 
         btnPlayPause.setOnClickListener {
             if (mediaPlayerService!!.mediaPlayer?.isPlaying == true) {
+                Log.d("MediaPlayerStatus","Stopped From PlayActivity")
                 isPlaying=false
                 mediaPlayerService!!.mediaPlayer?.pause()
                 btnPlayPause.setImageResource(R.drawable.ic_play)
                 mediaPlayerService!!.showNotification(R.drawable.ic_play)
+
             } else {
+                Log.d("MediaPlayerStatus","Started From PlayActivity")
                 isPlaying=true
                 mediaPlayerService!!.mediaPlayer?.start()
                 btnPlayPause.setImageResource(R.drawable.ic_pause)
                 mediaPlayerService!!.showNotification(R.drawable.ic_pause)
                 updateSeekBar()
+
 
             }
             isPlaying = !isPlaying
@@ -260,6 +250,7 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
 
     private fun setMusic(){
         setLayout()
+        Log.d("MediaPlayerStatus","Started From PlayActivity")
         mediaPlayerService!!.createMediaPlayer()
         mediaPlayerService!!.mediaPlayer?.start()
         btnPlayPause.setImageResource(R.drawable.ic_pause)
@@ -270,6 +261,7 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
     private fun initializeLayout(){
         when(intent.getStringExtra("class")){
             "NowPlaying"->{
+
                 setLayout()
                 btnPlayPause.setImageResource(R.drawable.ic_pause)
                 updateSeekBar()
@@ -279,6 +271,7 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
                 val intent2 = Intent(this, MediaPlayerService::class.java)
                 bindService(intent2, this, BIND_AUTO_CREATE)
                 startService(intent2)
+
             }
         }
     }
@@ -297,7 +290,7 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
 
         viewModel = ViewModelProvider(this).get(FavouritesViewModel::class.java)
 
-        sharedPref = getSharedPreferences(MYPREFSNAME,MODE_PRIVATE)
+        sharedPref = SharedPreferenceInstance(this).getSPInstance()
 
         intent = getIntent()
         extras = intent.extras!!
@@ -347,12 +340,12 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
     }
 
     private fun updateSeekBar() {
-        if (updateSeekBarJob!=null){
+        if (updateSeekBarJobDefault!=null){
             updateSeekBarJob!!.cancel()
+            updateSeekBarJobDefault!!.cancel()
         }
-        updateSeekBarJob = viewModel.viewModelScope.launch {
+        updateSeekBarJobDefault = viewModel.viewModelScope.launch(Dispatchers.Default) {
             while (isActive){
-                delay(1000)
                 if (mediaPlayerService != null) {
                     if (mediaPlayerService!!.mediaPlayer != null) {
                         if (mediaPlayerService!!.mediaPlayer?.isPlaying == true) {
@@ -360,19 +353,23 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
                         }
                     }
                 }
+                delay(1000)
 
             }
         }
     }
 
     private fun updateSeekBarUI() {
-        binding.seekBar.progress = mediaPlayerService!!.mediaPlayer?.currentPosition!!
-        val currentTime = formatTime(mediaPlayerService!!.mediaPlayer?.currentPosition!!)
-        val totalTime = formatTime(mediaPlayerService!!.mediaPlayer?.duration!!)
-        binding.startTimeText.text = currentTime
-        Log.d("CHEEZY_TIMING", mediaPlayerService!!.mediaPlayer?.currentPosition.toString())
-        binding.seekBar.max = mediaPlayerService!!.mediaPlayer?.duration!!
-        binding.endTimeText.text = totalTime
+        updateSeekBarJob = viewModel.viewModelScope.launch(Dispatchers.Main.immediate) {
+            binding.seekBar.max = mediaPlayerService!!.mediaPlayer?.duration!!
+            binding.seekBar.progress = mediaPlayerService!!.mediaPlayer?.currentPosition!!
+            val currentTime = formatTime(mediaPlayerService!!.mediaPlayer?.currentPosition!!)
+            val totalTime = formatTime(mediaPlayerService!!.mediaPlayer?.duration!!)
+            binding.startTimeText.text = currentTime
+            Log.d("CHEEZY_TIMING", mediaPlayerService!!.mediaPlayer?.currentPosition.toString())
+
+            binding.endTimeText.text = totalTime
+        }
     }
 
     private fun formatTime(ms: Int): String {
@@ -382,8 +379,8 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
     }
 
 
-    private suspend  fun setFavSongStatus(fQ: FavSongQuery, transType:Int){
-        val operationResult: OperationResult<FavTransactionResp> = if (transType==INSERTTRANSACTION){
+    private suspend  fun setFavSongStatus(fQ: FavSongQuery, transType:TransactionTypes){
+        val operationResult: OperationResult<FavTransactionResp> = if (transType==TransactionTypes.INSERT_TRANSACTION){
             viewModel.addFavSong(fQ)
         } else{
             viewModel.removeFavSong(fQ)

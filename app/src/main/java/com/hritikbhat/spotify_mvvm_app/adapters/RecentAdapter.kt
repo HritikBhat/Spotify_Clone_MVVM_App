@@ -36,30 +36,23 @@ class RecentAdapter : RecyclerView.Adapter<RecentAdapter.ViewHolder>() {
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Song) {
             // Bind your data to the layout using data binding
+            //            var typeName="Song • ${item.artist_name_arr[0]}"
 
-            var typeName= ""
-            var typeImg= ""
+
             var intent: Intent
-                    typeName="Song • ${item.artist_name_arr[0]}"
-                    typeImg= RetrofitHelper.BASE_URL +"data/img/playlist/${item.albumId}.jpg"
-                    binding.recentItemLayout.setOnClickListener {
-                        intent = Intent(binding.root.context, PlayActivity::class.java)
+            val typeImg= RetrofitHelper.BASE_URL +"data/img/playlist/${item.albumId}.jpg"
+            binding.recentItemLayout.setOnClickListener {
+                intent = Intent(binding.root.context, PlayActivity::class.java)
 
-                        val gson = Gson()
-                        val items:ArrayList<Song> = arrayListOf()
-                        items.add(item)
+                val gson = Gson()
+                val items:ArrayList<Song> = arrayListOf()
+                items.add(item)
 
-                        intent.putExtra("songList", gson.toJson(items))
-                        intent.putExtra("position", 0)
-                        intent.putExtra("class", "ActivityOrAdapterPlaying")
-
-//                        intent.putExtra("sid", item.sid)
-//                        intent.putExtra("sname", item.sname)
-//                        intent.putExtra("salbumId", item.albumId)
-//                        intent.putExtra("artistArrString",item.artist_name_arr[0])
-//                        intent.putExtra("isFav",item.isFav)
-                        binding.recentPhotoImg.context.startActivity(intent)
-                    }
+                intent.putExtra("songList", gson.toJson(items))
+                intent.putExtra("position", 0)
+                intent.putExtra("class", "ActivityOrAdapterPlaying")
+                binding.recentPhotoImg.context.startActivity(intent)
+            }
 
             Glide.with(binding.recentPhotoImg.context)
                 .load(typeImg).thumbnail()

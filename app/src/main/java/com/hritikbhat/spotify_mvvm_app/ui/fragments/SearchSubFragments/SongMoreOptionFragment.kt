@@ -10,14 +10,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.hritikbhat.spotify_mvvm_app.R
-import com.hritikbhat.spotify_mvvm_app.databinding.FragmentPlaylistMoreOptionBinding
+import com.hritikbhat.spotify_mvvm_app.Utils.SharedPreferenceInstance
+import com.hritikbhat.spotify_mvvm_app.Utils.TransactionTypes
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentSongMoreOptionBinding
 import com.hritikbhat.spotify_mvvm_app.models.AddSongPlaylistQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavSongQuery
@@ -30,13 +30,10 @@ import com.hritikbhat.spotify_mvvm_app.viewModels.SubFragmentsViewModels.FavPlay
 import kotlinx.coroutines.launch
 
 class SongMoreOptionFragment : Fragment() {
-
-    private val INSERTTRANSACTION =1
-    private  val DELETETRANSACTION=0
+    
 
     private lateinit var binding: FragmentSongMoreOptionBinding
-    private val MY_PREFS_NAME: String = "MY_PREFS"
-    private lateinit var curr_passHash:String
+    private lateinit var currPassHash:String
     private lateinit var sharedPref: SharedPreferences
 
     private lateinit var viewModel: SearchViewModel
@@ -50,14 +47,12 @@ class SongMoreOptionFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
 
 
-        sharedPref = requireContext().getSharedPreferences(MY_PREFS_NAME,
-            AppCompatActivity.MODE_PRIVATE
-        )
-        curr_passHash = sharedPref.getString("passHash", "").toString()
+        sharedPref = SharedPreferenceInstance(requireContext()).getSPInstance()
+        currPassHash = sharedPref.getString("passHash", "").toString()
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_song_more_option, container, false)
 
         val songsMoreOptionFragmentArgs = SongMoreOptionFragmentArgs.fromBundle(requireArguments())
@@ -70,8 +65,8 @@ class SongMoreOptionFragment : Fragment() {
 
 
         // Initialize the ViewModel
-        viewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
-        viewModel2 = ViewModelProvider(this).get(FavPlaylistViewModel::class.java)
+        viewModel = ViewModelProvider(this)[SearchViewModel::class.java]
+        viewModel2 = ViewModelProvider(this)[FavPlaylistViewModel::class.java]
 
 
         binding.songOptionImg.setImageResource(R.drawable.ic_fav_unselected_white)
@@ -97,7 +92,7 @@ class SongMoreOptionFragment : Fragment() {
             binding.songOptionImg.setImageResource(R.drawable.ic_fav_selected_white)
         }
 
-        binding.addToPlaylistSong.setOnClickListener(View.OnClickListener {
+        binding.addToPlaylistSong.setOnClickListener{
             val sid = songData.sid
 //            viewModel.viewModelScope.launch {
 //                setInitForAddToPlay(sid.toString())
@@ -106,27 +101,27 @@ class SongMoreOptionFragment : Fragment() {
             val action = SongMoreOptionFragmentDirections.actionSongMoreOptionFragmentToAddToCustomPlaylistFragment()
             action.sid = sid
             findNavController().navigate(action)
-        })
+        }
 
         //need ptype and plid sent here
         if (ptype==3){
             binding.removeSongFromPlaylist.visibility=View.VISIBLE
-            binding.removeSongFromPlaylist.setOnClickListener(View.OnClickListener {
+            binding.removeSongFromPlaylist.setOnClickListener{
                 val sid = songData.sid
                 viewModel.viewModelScope.launch {
-                    removeSongFromPlaylist(curr_passHash,plid,sid.toString())
+                    removeSongFromPlaylist(currPassHash,plid,sid.toString())
                 }
-            })
+            }
         }else{binding.removeSongFromPlaylist.visibility=View.GONE}
 
-        binding.likeSong.setOnClickListener(View.OnClickListener {
-
-
+        binding.likeSong.setOnClickListener{
             if (isFavSong){
 
                 //DeleteFavSong
                 viewModel.viewModelScope.launch {
-                    setFavSongStatus(FavSongQuery(curr_passHash,songData.sid.toString()),DELETETRANSACTION)
+                    setFavSongStatus(FavSongQuery(currPassHash,songData.sid.toString()),
+                        TransactionTypes.DELETE_TRANSACTION
+                    )
                     binding.songOptionImg.setImageResource(R.drawable.ic_fav_unselected_white)
                     //Send back updated items back when clicked back
                 }
@@ -135,15 +130,13 @@ class SongMoreOptionFragment : Fragment() {
 
                 //AddFavSong
                 viewModel.viewModelScope.launch {
-                    setFavSongStatus(FavSongQuery(curr_passHash,songData.sid.toString()),INSERTTRANSACTION)
+                    setFavSongStatus(FavSongQuery(currPassHash,songData.sid.toString()),
+                        TransactionTypes.INSERT_TRANSACTION
+                    )
                     binding.songOptionImg.setImageResource(R.drawable.ic_fav_selected_white)
-
-                    //Send back updated items back when clicked back
-
-//                    playlistAdapter.setSongFavStatus(pos,true)
                 }
             }
-        })
+        }
 
         requireActivity().onBackPressedDispatcher.addCallback(
             requireActivity(),
@@ -169,14 +162,11 @@ class SongMoreOptionFragment : Fragment() {
         return binding.root
     }
 
-    suspend  fun setFavSongStatus(fQ: FavSongQuery, transType:Int){
-        var operationResult: OperationResult<FavTransactionResp>
-        if (transType==INSERTTRANSACTION){
-
-            operationResult = viewModel.addFavSong(fQ)
-        }
-        else{
-            operationResult= viewModel.removeFavSong(fQ)
+    suspend  fun setFavSongStatus(fQ: FavSongQuery, transType:TransactionTypes){
+        val operationResult: OperationResult<FavTransactionResp> = if (transType==TransactionTypes.INSERT_TRANSACTION){
+            viewModel.addFavSong(fQ)
+        } else{
+            viewModel.removeFavSong(fQ)
         }
 
         when (operationResult) {
@@ -203,9 +193,9 @@ class SongMoreOptionFragment : Fragment() {
         }
     }
 
-    private suspend fun removeSongFromPlaylist(curr_passHash: String, plid: String, sid: String) {
-        var operationResult: OperationResult<FavTransactionResp> = viewModel2.deleteSongFromPlaylist(
-            AddSongPlaylistQuery(curr_passHash,plid,sid)
+    private suspend fun removeSongFromPlaylist(currPassHash: String, plid: String, sid: String) {
+        val operationResult: OperationResult<FavTransactionResp> = viewModel2.deleteSongFromPlaylist(
+            AddSongPlaylistQuery(currPassHash,plid,sid)
         )
 
         when (operationResult) {
@@ -222,7 +212,7 @@ class SongMoreOptionFragment : Fragment() {
 //                    binding.songMoreOptionLayout.visibility=View.GONE
 //                    binding.addToPlaylistRC.visibility=View.GONE
 //                    binding.favPlaylistRC.visibility = View.GONE
-//                    getPlaylistDetails(plid.toInt(),plqPname,plqAname,plqPType,PlayListQuery(plid,curr_passHash))
+//                    getPlaylistDetails(plid.toInt(),plqPname,plqAname,plqPType,PlayListQuery(plid,currPassHash))
 
                     //BackTo Show
 

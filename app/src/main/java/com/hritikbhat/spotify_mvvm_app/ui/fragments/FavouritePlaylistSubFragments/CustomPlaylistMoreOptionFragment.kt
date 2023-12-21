@@ -10,12 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.hritikbhat.spotify_mvvm_app.R
+import com.hritikbhat.spotify_mvvm_app.Utils.SharedPreferenceInstance
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentCustomPlaylistMoreOptionBinding
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentFavouritesBinding
 import com.hritikbhat.spotify_mvvm_app.models.AddSongPlaylistQuery
@@ -31,13 +31,12 @@ class CustomPlaylistMoreOptionFragment : Fragment(){
     private lateinit var binding: FragmentCustomPlaylistMoreOptionBinding
     private lateinit var binding2:FragmentFavouritesBinding
     private lateinit var sharedPref: SharedPreferences
-    private val MY_PREFS_NAME: String = "MY_PREFS"
-    private lateinit var curr_passHash:String
+    private lateinit var currPassHash:String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_custom_playlist_more_option, container, false)
@@ -45,19 +44,15 @@ class CustomPlaylistMoreOptionFragment : Fragment(){
         binding2 = FavouritesFragment.binding
 
 
-        viewModel = ViewModelProvider(this).get(FavPlaylistViewModel::class.java)
+        viewModel = ViewModelProvider(this)[FavPlaylistViewModel::class.java]
 
 
         val customPlaylistMoreOptionFragmentArgs = CustomPlaylistMoreOptionFragmentArgs.fromBundle(requireArguments())
 
         val playlistData = customPlaylistMoreOptionFragmentArgs.playlistData
 
-
-        sharedPref = requireContext().getSharedPreferences(
-            MY_PREFS_NAME,
-            AppCompatActivity.MODE_PRIVATE
-        )
-        curr_passHash = sharedPref.getString("passHash", "").toString()
+        sharedPref = SharedPreferenceInstance(requireContext()).getSPInstance()
+        currPassHash = sharedPref.getString("passHash", "").toString()
 
         binding.customPlaylistMoreOptionBackBtn.setOnClickListener{
             findNavController().popBackStack()
@@ -65,12 +60,11 @@ class CustomPlaylistMoreOptionFragment : Fragment(){
 
         binding.playlistName.text = playlistData.plname
 
-        binding.deletePlaylist.setOnClickListener(View.OnClickListener {
+        binding.deletePlaylist.setOnClickListener{
             viewModel.viewModelScope.launch {
                 setInitForDeleteCustPlay(playlistData.plid.toString())
             }
-
-        })
+        }
 
         requireActivity().onBackPressedDispatcher.addCallback(
             requireActivity(),
@@ -88,14 +82,13 @@ class CustomPlaylistMoreOptionFragment : Fragment(){
             }
         )
 
-
         return binding.root
     }
 
     private suspend fun setInitForDeleteCustPlay(plid: String) {
 
-        var operationResult: OperationResult<FavTransactionResp> = viewModel.removeCustomPlayList(
-            AddSongPlaylistQuery(curr_passHash,plid,"")
+        val operationResult: OperationResult<FavTransactionResp> = viewModel.removeCustomPlayList(
+            AddSongPlaylistQuery(currPassHash,plid,"")
         )
 
         when (operationResult) {
@@ -108,16 +101,7 @@ class CustomPlaylistMoreOptionFragment : Fragment(){
                 val favTransactionResp : FavTransactionResp = operationResult.data
 
                 if (favTransactionResp.success){
-//                    getUserFavPlaylist()
-
-//                    binding.favPlaylistRC.visibility=View.VISIBLE
-//                    binding.noFavouriteLayout.visibility = View.GONE
-//                    binding.playlistRC.visibility = View.GONE
-//                    binding.songMoreOptionLayout.visibility=View.GONE
-//                    binding.customPlaylistMoreOptionLayout.visibility=View.GONE
-//                    binding2.tabLayout.visibility=View.VISIBLE
-//                    binding2.viewPager.isUserInputEnabled = true
-                    //Go back to favplayliststart page
+                    //Go back to favPlaylistStart page
 
                     binding2.tabLayout.visibility=View.VISIBLE
                     binding2.viewPager.isUserInputEnabled = true

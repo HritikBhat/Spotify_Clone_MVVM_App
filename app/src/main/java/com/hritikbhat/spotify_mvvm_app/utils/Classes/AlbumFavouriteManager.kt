@@ -13,7 +13,6 @@ import kotlinx.coroutines.withContext
 
 class AlbumFavouriteManager(private val apiService: ApiService) {
 
-
     suspend fun getUserFavAlbum(fQ: FavPlaylistQuery): OperationResult<favPlaylists>{
 
         try {

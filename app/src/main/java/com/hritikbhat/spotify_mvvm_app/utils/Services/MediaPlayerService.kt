@@ -14,14 +14,12 @@ import android.os.Build
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
-import androidx.annotation.Nullable
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.google.gson.Gson
 import com.hritikbhat.spotify_mvvm_app.models.FavSongQuery
 import com.hritikbhat.spotify_mvvm_app.R
 import com.hritikbhat.spotify_mvvm_app.utils.Retrofit.RetrofitHelper.BASE_URL
@@ -45,7 +43,6 @@ class MediaPlayerService: Service() {
     private var playPendingIntent: PendingIntent? =null
     private var nextPendingIntent: PendingIntent? =null
     private var exitPendingIntent: PendingIntent? =null
-    private var contextIntent: Intent? =null
 
     inner class MyBinder:Binder() {
             fun currentService(): MediaPlayerService {
@@ -90,15 +87,6 @@ class MediaPlayerService: Service() {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
 
-        val gson = Gson()
-
-//        intent.putExtra("index", PlayActivity.position)
-//        intent.putExtra("songList", gson.toJson(PlayActivity.songListArr))
-//        intent.putExtra("position", PlayActivity.position)
-//        intent.putExtra("ptype",PlayActivity.ptype)
-//        intent.putExtra("onShuffle",PlayActivity.onShuffle)
-//        intent.putExtra("class", "NowPlaying")
-
         val contentIntent = PendingIntent.getActivity(this, 0, intent, flag)
 
         val notification = NotificationCompat.Builder(baseContext, ApplicationClass.CHANNEL_ID)
@@ -133,13 +121,13 @@ class MediaPlayerService: Service() {
             .into(object : CustomTarget<Bitmap?>() {
                 override fun onResourceReady(
                     resource: Bitmap,
-                    @Nullable transition: Transition<in Bitmap?>?
+                    transition: Transition<in Bitmap?>?
                 ) {
                     albumBitmap = resource
                     showNotification()
 
                 }
-                override fun onLoadCleared(@Nullable placeholder: Drawable?) {}
+                override fun onLoadCleared(placeholder: Drawable?) {}
             })
     }
 
@@ -178,7 +166,7 @@ class MediaPlayerService: Service() {
             }
         }
         Log.d("CHEEZY MUSIC POSITION","Index: ${PlayActivity.position}")
-        PlayActivity.binding.startTimeText.text="00:00"
+        PlayActivity.binding.startTimeText.text= getString(R.string.startTime_MMSS)
         PlayActivity.mediaPlayerService!!.createMediaPlayer()
         Glide.with(this)
             . load("${BASE_URL +"data/img/playlist/"}${PlayActivity.songListArr[PlayActivity.position].albumId}.jpg")
@@ -186,7 +174,7 @@ class MediaPlayerService: Service() {
             .into(PlayActivity.binding.playMusicImage)
 
         PlayActivity.viewModel.viewModelScope.launch {
-            PlayActivity.viewModel.addRecentSong(FavSongQuery(PlayActivity.curr_passHash,PlayActivity.songListArr[PlayActivity.position].sid.toString()))
+            PlayActivity.viewModel.addRecentSong(FavSongQuery(PlayActivity.currPassHash,PlayActivity.songListArr[PlayActivity.position].sid.toString()))
         }
         PlayActivity.mediaPlayerService!!.showNotification(R.drawable.ic_pause)
 

@@ -21,7 +21,7 @@ import kotlin.random.Random
 class PlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val HEADER_VIEW_TYPE = 0
     private val ITEM_VIEW_TYPE = 1
-    private var onItemClickListener: PlaylistAdapter.OnItemClickListener? = null
+    private var onItemClickListener: OnItemClickListener? = null
     private var isFav:Boolean = false
     private var ptype:Int = -1
     private var plid:String = ""
@@ -70,12 +70,12 @@ class PlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 binding.playlistFavBtn.visibility=View.INVISIBLE
                 binding.playlistMenuBtn.visibility=View.VISIBLE
                 binding.playlistImage.setImageResource(R.drawable.playlist_default_img)
-                binding.playlistMenuBtn.setOnClickListener(View.OnClickListener {
-                    onItemClickListener?.onItemPlaylistMoreOptionClick(plid,pName,ptype)
-                })
+                binding.playlistMenuBtn.setOnClickListener {
+                    onItemClickListener?.onItemPlaylistMoreOptionClick(plid, pName, ptype)
+                }
             }
 
-            else if (plid.equals("-1")){
+            else if (plid == "-1"){
                 binding.playlistFavBtn.visibility= View.INVISIBLE
                 binding.playlistImage.setImageResource(R.drawable.liked_song_playlist_img_bigpxl)
             }else{
@@ -93,7 +93,7 @@ class PlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
             }
 
-            binding.playlistShufflePlay.setOnClickListener(View.OnClickListener {
+            binding.playlistShufflePlay.setOnClickListener{
                 val intent = Intent(binding.root.context, PlayActivity::class.java)
                 val gson = Gson()
 
@@ -104,7 +104,7 @@ class PlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 intent.putExtra("ptype",ptype)
                 intent.putExtra("onShuffle",true)
                 binding.root.context.startActivity(intent)
-            })
+            }
 
 
             if (isFav){
@@ -136,10 +136,10 @@ class PlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             binding.playlistSongArtist.text = items[position-1].artist_name_arr.joinToString(", ")
 
 
-            binding.songMoreOptionBtn.setOnClickListener(View.OnClickListener {
+            binding.songMoreOptionBtn.setOnClickListener{
                 //Song More Option Menu
                 onItemClickListener?.onItemMoreOptionClick(plid,items,position-1,ptype)
-            })
+            }
 
             binding.playlistSongItem.setOnClickListener {
                 val intent = Intent(binding.root.context, PlayActivity::class.java)

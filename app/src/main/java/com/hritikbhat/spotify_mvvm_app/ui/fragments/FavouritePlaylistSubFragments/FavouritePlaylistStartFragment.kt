@@ -7,24 +7,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hritikbhat.spotify_mvvm_app.R
+import com.hritikbhat.spotify_mvvm_app.Utils.SharedPreferenceInstance
 import com.hritikbhat.spotify_mvvm_app.adapters.FavPlaylistAdapter
-import com.hritikbhat.spotify_mvvm_app.databinding.FragmentFavPlaylistBinding
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentFavouritePlaylistStartBinding
 import com.hritikbhat.spotify_mvvm_app.models.FavPlaylistQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavPlaylistsX
 import com.hritikbhat.spotify_mvvm_app.models.OperationResult
-import com.hritikbhat.spotify_mvvm_app.models.PlayListQuery
 import com.hritikbhat.spotify_mvvm_app.models.Playlist
 import com.hritikbhat.spotify_mvvm_app.models.favPlaylists
-import com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.DoSearchFragmentDirections
-import com.hritikbhat.spotify_mvvm_app.viewModels.SearchViewModel
 import com.hritikbhat.spotify_mvvm_app.viewModels.SubFragmentsViewModels.FavPlaylistViewModel
 import kotlinx.coroutines.launch
 
@@ -35,28 +31,22 @@ class FavouritePlaylistStartFragment : Fragment(),FavPlaylistAdapter.OnItemClick
 
     private lateinit var sharedPref: SharedPreferences
 
-    private val MY_PREFS_NAME: String = "MY_PREFS"
-    private lateinit var curr_passHash:String
+    private lateinit var currPassHash:String
 
     private val favPlaylistRCAdapter = FavPlaylistAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_favourite_playlist_start, container, false)
 
-
-
-        sharedPref = requireContext().getSharedPreferences(
-            MY_PREFS_NAME,
-            AppCompatActivity.MODE_PRIVATE
-        )
-        curr_passHash = sharedPref.getString("passHash", "").toString()
+        sharedPref = SharedPreferenceInstance(requireContext()).getSPInstance()
+        currPassHash = sharedPref.getString("passHash", "").toString()
 
         binding.favPlaylistRC.layoutManager = LinearLayoutManager(context)
 
-        viewModel = ViewModelProvider(this).get(FavPlaylistViewModel::class.java)
+        viewModel = ViewModelProvider(this)[FavPlaylistViewModel::class.java]
 
 
         viewModel.viewModelScope.launch {
@@ -68,8 +58,8 @@ class FavouritePlaylistStartFragment : Fragment(),FavPlaylistAdapter.OnItemClick
 
 
     private suspend  fun getUserFavPlaylist(){
-        var operationResult: OperationResult<favPlaylists> =
-            viewModel.getUserFavPlaylist(FavPlaylistQuery(curr_passHash,"-1"))
+        val operationResult: OperationResult<favPlaylists> =
+            viewModel.getUserFavPlaylist(FavPlaylistQuery(currPassHash,"-1"))
 
         when (operationResult) {
             is OperationResult.Success -> {
@@ -114,14 +104,7 @@ class FavouritePlaylistStartFragment : Fragment(),FavPlaylistAdapter.OnItemClick
     override fun onItemClick(plid: Int, pname: String, ptype: Int, aname: String) {
         viewModel.viewModelScope.launch {
             if (plid==-2){
-//                binding.customPlaylistLayout.visibility=View.VISIBLE
-//                binding.noFavouriteLayout.visibility=View.GONE
-//                binding.favPlaylistRC.visibility = View.GONE
-//                binding2.tabLayout.visibility=View.GONE
-//                binding2.viewPager.isUserInputEnabled = false
-
                 //Send to Custom Playlist Creation
-
                 findNavController().navigate(R.id.action_favouritePlaylistStartFragment_to_addCustomPlaylistFragment)
 
             }

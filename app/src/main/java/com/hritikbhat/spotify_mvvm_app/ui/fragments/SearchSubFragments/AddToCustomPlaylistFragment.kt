@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +16,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hritikbhat.spotify_mvvm_app.R
+import com.hritikbhat.spotify_mvvm_app.Utils.SharedPreferenceInstance
 import com.hritikbhat.spotify_mvvm_app.adapters.AddToPlaylistAdapter
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentAddToCustomPlaylistBinding
 import com.hritikbhat.spotify_mvvm_app.models.AddSongPlaylistQuery
@@ -34,25 +34,22 @@ class AddToCustomPlaylistFragment : Fragment(),AddToPlaylistAdapter.OnItemClickL
     private val addToPlaylistAdapter = AddToPlaylistAdapter()
 
     private lateinit var viewModel: SearchViewModel
-
-    private val MY_PREFS_NAME: String = "MY_PREFS"
-    private lateinit var curr_passHash:String
+    
+    private lateinit var currPassHash:String
     private lateinit var sharedPref: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_add_to_custom_playlist, container, false)
 
         // Initialize the ViewModel
-        viewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
+        viewModel = ViewModelProvider(this)[SearchViewModel::class.java]
 
-        sharedPref = requireContext().getSharedPreferences(MY_PREFS_NAME,
-            AppCompatActivity.MODE_PRIVATE
-        )
-        curr_passHash = sharedPref.getString("passHash", "").toString()
+        sharedPref = SharedPreferenceInstance(requireContext()).getSPInstance()
+        currPassHash = sharedPref.getString("passHash", "").toString()
 
         //Set up AddToPlaylistRC
         binding.addToPlaylistRC.layoutManager = LinearLayoutManager(context)
@@ -90,8 +87,8 @@ class AddToCustomPlaylistFragment : Fragment(),AddToPlaylistAdapter.OnItemClickL
         //binding.songOptionImg.setImageResource(R.drawable.ic_fav_unselected_white)
         //Go to add to playlist tab
 
-        var operationResult: OperationResult<favPlaylists> =
-            viewModel.getUserCustomFavPlaylist(FavPlaylistQuery(curr_passHash,"-1"))
+        val operationResult: OperationResult<favPlaylists> =
+            viewModel.getUserCustomFavPlaylist(FavPlaylistQuery(currPassHash,"-1"))
 
         when (operationResult) {
             is OperationResult.Success -> {
@@ -115,7 +112,7 @@ class AddToCustomPlaylistFragment : Fragment(),AddToPlaylistAdapter.OnItemClickL
     override fun onSelectingAddToPlaylistItemClick(plid: String, sid: String) {
         //AddFavSong
         viewModel.viewModelScope.launch {
-            addSongToCustomPlaylist(curr_passHash,plid,sid)
+            addSongToCustomPlaylist(currPassHash,plid,sid)
         }
     }
 
@@ -123,9 +120,9 @@ class AddToCustomPlaylistFragment : Fragment(),AddToPlaylistAdapter.OnItemClickL
         findNavController().popBackStack()
     }
 
-    private suspend fun addSongToCustomPlaylist(curr_passHash: String, plid: String, sid: String) {
-        var operationResult: OperationResult<FavTransactionResp> = viewModel.addSongToPlaylist(
-            AddSongPlaylistQuery(curr_passHash,plid,sid)
+    private suspend fun addSongToCustomPlaylist(currPassHash: String, plid: String, sid: String) {
+        val operationResult: OperationResult<FavTransactionResp> = viewModel.addSongToPlaylist(
+            AddSongPlaylistQuery(currPassHash,plid,sid)
         )
 
         when (operationResult) {

@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -18,14 +17,13 @@ import com.hritikbhat.spotify_mvvm_app.adapters.RecentAdapter
 import com.hritikbhat.spotify_mvvm_app.models.OperationResult
 import com.hritikbhat.spotify_mvvm_app.models.Song
 import com.hritikbhat.spotify_mvvm_app.R
+import com.hritikbhat.spotify_mvvm_app.Utils.SharedPreferenceInstance
 import com.hritikbhat.spotify_mvvm_app.viewModels.HomeViewModel
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentHomeBinding
 import com.hritikbhat.spotify_mvvm_app.ui.activities.SettingsActivity
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
-
-
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var binding: FragmentHomeBinding
@@ -35,39 +33,35 @@ class HomeFragment : Fragment() {
     private val recentRCAdapter = RecentAdapter()
 
     private lateinit var sharedPref: SharedPreferences
-
-    private val MY_PREFS_NAME: String = "MY_PREFS"
-    private lateinit var curr_passHash:String
+    private lateinit var currPassHash:String
 
     override fun onResume() {
         super.onResume()
         viewModel.viewModelScope.launch {
-            getRecents()
+            getRecent()
         }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout using data binding
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
 
         // Initialize the ViewModel
-        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
 
         context= this.requireContext()
 
-        sharedPref = context.getSharedPreferences(MY_PREFS_NAME,
-            AppCompatActivity.MODE_PRIVATE
-        )
-        curr_passHash = sharedPref.getString("passHash", "").toString()
+        sharedPref = SharedPreferenceInstance(requireContext()).getSPInstance()
+        currPassHash = sharedPref.getString("passHash", "").toString()
 
         val view = binding.root
 
-        binding.homesSettingBtn.setOnClickListener(View.OnClickListener {
+        binding.homesSettingBtn.setOnClickListener{
             startSettingActivity(context)
-        })
+        }
 
         val layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -78,7 +72,7 @@ class HomeFragment : Fragment() {
         binding.recentPlayedRC.adapter = recentRCAdapter
 
         viewModel.viewModelScope.launch {
-            getRecents()
+            getRecent()
         }
 
 
@@ -87,10 +81,9 @@ class HomeFragment : Fragment() {
         return view
     }
 
-    suspend  fun getRecents(){
-        val operationResult: OperationResult<List<Song>> = viewModel.getRecent(curr_passHash)
+    private suspend  fun getRecent(){
 
-        when (operationResult) {
+        when (val operationResult: OperationResult<List<Song>> = viewModel.getRecent(currPassHash)) {
             is OperationResult.Success -> {
                 // Operation was successful, handle the result
 

@@ -1,8 +1,5 @@
 package com.hritikbhat.spotify_mvvm_app.ui.fragments
 
-import android.content.Context
-import android.content.SharedPreferences
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -19,7 +16,7 @@ class SearchFragment : Fragment(){
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout using data binding
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false)
 

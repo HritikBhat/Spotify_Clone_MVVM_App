@@ -1,5 +1,6 @@
 package com.hritikbhat.spotify_mvvm_app.ui.activities
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -7,26 +8,25 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.hritikbhat.spotify_mvvm_app.R
+import com.hritikbhat.spotify_mvvm_app.Utils.SharedPreferenceInstance
 import com.hritikbhat.spotify_mvvm_app.viewModels.LoginViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var sharedPref: SharedPreferences
 
-    private val MY_PREFS_NAME: String = "MY_PREFS"
-
     private fun goToActivity(targetActivity: Class<*>) {
-        val i = Intent(this@SplashActivity, targetActivity)
+        val i = Intent(this, targetActivity)
         startActivity(i)
         finish()
     }
 
     private fun getSharedPreferences():SharedPreferences{
-        return applicationContext.getSharedPreferences(MY_PREFS_NAME,MODE_PRIVATE)
+        return SharedPreferenceInstance(this).getSPInstance()
     }
 
 

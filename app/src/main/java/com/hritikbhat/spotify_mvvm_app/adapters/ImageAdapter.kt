@@ -1,4 +1,4 @@
-package com.hritikbhat.spotify_mvvm_app.adapters
+package com.hritikbhat.spotify_mvvm_app.Adapters
 
 import android.view.LayoutInflater
 import android.view.View

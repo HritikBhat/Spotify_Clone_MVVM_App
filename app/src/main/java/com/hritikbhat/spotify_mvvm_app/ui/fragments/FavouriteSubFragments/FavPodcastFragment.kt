@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,6 +25,8 @@ import com.hritikbhat.spotify_mvvm_app.models.PlayListQuery
 import com.hritikbhat.spotify_mvvm_app.models.Song
 import com.hritikbhat.spotify_mvvm_app.models.favPlaylists
 import com.hritikbhat.spotify_mvvm_app.R
+import com.hritikbhat.spotify_mvvm_app.Utils.SharedPreferenceInstance
+import com.hritikbhat.spotify_mvvm_app.Utils.TransactionTypes
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentFavPodcastBinding
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentFavouritesBinding
 import com.hritikbhat.spotify_mvvm_app.ui.fragments.FavouritesFragment
@@ -38,39 +37,31 @@ class FavPodcastFragment : Fragment(), FavPlaylistAdapter.OnItemClickListener,Pl
     private lateinit var binding: FragmentFavPodcastBinding
     private lateinit var binding2: FragmentFavouritesBinding
 
-    private val INSERTTRANSACTION =1
-    private  val DELETETRANSACTION=0
-
-    private val handler = Handler(Looper.myLooper()!!)
     private lateinit var context: Context
 
     private val favPlaylistRCAdapter = FavPlaylistAdapter()
     private val playlistAdapter = PlaylistAdapter()
 
     private lateinit var sharedPref: SharedPreferences
-
-    private val MY_PREFS_NAME: String = "MY_PREFS"
-    private lateinit var curr_passHash:String
+    
+    private lateinit var currPassHash:String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout using data binding
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_fav_podcast, container, false)
         binding2 = FavouritesFragment.binding
         context = binding.root.context
 
-        sharedPref = context.getSharedPreferences(
-            MY_PREFS_NAME,
-            AppCompatActivity.MODE_PRIVATE
-        )
-        curr_passHash = sharedPref.getString("passHash", "").toString()
+        sharedPref = SharedPreferenceInstance(context).getSPInstance()
+        currPassHash = sharedPref.getString("passHash", "").toString()
 
         favPlaylistRCAdapter.setOnItemClickListener(this)
         playlistAdapter.setOnItemClickListener(this)
 
-        viewModel = ViewModelProvider(this).get(FavPodcastViewModel::class.java)
+        viewModel = ViewModelProvider(this)[FavPodcastViewModel::class.java]
 
         activity?.onBackPressedDispatcher?.addCallback(
             viewLifecycleOwner,
@@ -107,15 +98,13 @@ class FavPodcastFragment : Fragment(), FavPlaylistAdapter.OnItemClickListener,Pl
 
         binding.playlistRC.layoutManager = LinearLayoutManager(context)
         binding.playlistRC.adapter = playlistAdapter
-
-
         return binding.root
 
     }
 
-    override fun onItemClick(plid: Int, pname: String, ptype: Int, aname: String) {
+    override fun onItemClick(plid: Int, plName: String, ptype: Int, aname: String) {
         viewModel.viewModelScope.launch {
-            getPlaylistDetails(pname,aname,ptype,PlayListQuery(plid.toString(),curr_passHash))
+            getPlaylistDetails(plName,aname,ptype,PlayListQuery(plid.toString(),currPassHash))
         }
     }
 
@@ -128,14 +117,14 @@ class FavPodcastFragment : Fragment(), FavPlaylistAdapter.OnItemClickListener,Pl
 
             //DeleteFavSong
             viewModel.viewModelScope.launch {
-                setFavPlaylistStatus(FavPlaylistQuery(curr_passHash,plid.toString()),DELETETRANSACTION)
+                setFavPlaylistStatus(FavPlaylistQuery(currPassHash,plid.toString()),TransactionTypes.DELETE_TRANSACTION)
             }
         }
         else{
 
             //AddFavSong
             viewModel.viewModelScope.launch {
-                setFavPlaylistStatus(FavPlaylistQuery(curr_passHash,plid.toString()),INSERTTRANSACTION)
+                setFavPlaylistStatus(FavPlaylistQuery(currPassHash,plid.toString()),TransactionTypes.INSERT_TRANSACTION)
             }
         }
     }
@@ -147,9 +136,9 @@ class FavPodcastFragment : Fragment(), FavPlaylistAdapter.OnItemClickListener,Pl
     override fun onItemPlaylistMoreOptionClick(plid: String, pname: String, ptype: Int) {
     }
 
-    private suspend  fun setFavPlaylistStatus(fQ: FavPlaylistQuery, transType:Int){
-        var operationResult: OperationResult<FavTransactionResp>
-        if (transType==INSERTTRANSACTION){
+    private suspend  fun setFavPlaylistStatus(fQ: FavPlaylistQuery, transType:TransactionTypes){
+        val operationResult: OperationResult<FavTransactionResp>
+        if (transType== TransactionTypes.INSERT_TRANSACTION){
 
             operationResult = viewModel.addFavPlaylist(fQ)
         }
@@ -182,9 +171,8 @@ class FavPodcastFragment : Fragment(), FavPlaylistAdapter.OnItemClickListener,Pl
     }
 
     suspend  fun getPlaylistDetails(pname: String, aname: String,ptype:Int, plq: PlayListQuery){
-        val operationResult: OperationResult<PlayListDetail> = viewModel.getPlaylistDetails(plq)
 
-        when (operationResult) {
+        when (val operationResult: OperationResult<PlayListDetail> = viewModel.getPlaylistDetails(plq)) {
             is OperationResult.Success -> {
                 // Operation was successful, handle the result
 
@@ -218,8 +206,8 @@ class FavPodcastFragment : Fragment(), FavPlaylistAdapter.OnItemClickListener,Pl
 
 
     private suspend  fun getUserFavPlaylist(){
-        var operationResult: OperationResult<favPlaylists> =
-            viewModel.getUserFavPodcast(FavPlaylistQuery(curr_passHash,"-1"))
+        val operationResult: OperationResult<favPlaylists> =
+            viewModel.getUserFavPodcast(FavPlaylistQuery(currPassHash,"-1"))
 
         when (operationResult) {
             is OperationResult.Success -> {

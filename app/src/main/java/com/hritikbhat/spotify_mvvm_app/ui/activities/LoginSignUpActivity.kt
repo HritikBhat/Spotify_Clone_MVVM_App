@@ -20,8 +20,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.hritikbhat.spotify_mvvm_app.adapters.ImageAdapter
+import com.hritikbhat.spotify_mvvm_app.Adapters.ImageAdapter
 import com.hritikbhat.spotify_mvvm_app.R
+import com.hritikbhat.spotify_mvvm_app.Utils.SharedPreferenceInstance
 import com.hritikbhat.spotify_mvvm_app.viewModels.LoginViewModel
 import com.hritikbhat.spotify_mvvm_app.databinding.ActivityLoginSignUpBinding
 import kotlin.concurrent.fixedRateTimer
@@ -32,8 +33,6 @@ class LoginSignUpActivity : AppCompatActivity() {
     private lateinit var googleConnectBtn: Button
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: ActivityLoginSignUpBinding
-
-    private val MY_PREFS_NAME: String = "MY_PREFS"
 
     private lateinit var sharedPref: SharedPreferences
     private lateinit var editor : SharedPreferences.Editor
@@ -51,7 +50,7 @@ class LoginSignUpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedPref = applicationContext.getSharedPreferences(MY_PREFS_NAME,MODE_PRIVATE)
+        sharedPref = SharedPreferenceInstance(this).getSPInstance()
 
         editor = sharedPref.edit()
 
@@ -82,7 +81,8 @@ class LoginSignUpActivity : AppCompatActivity() {
 
         // Auto-rotate the ViewPager2 every 2 seconds
         val handler = Handler(Looper.getMainLooper())
-        val timer = fixedRateTimer("timer", false, 0, 6000) {
+        //Upgrade To Coroutines
+        fixedRateTimer("timer", false, 0, 6000) {
             handler.post {
                 currentPage = (currentPage + 1) % imageList.size
                 viewPager2.currentItem = currentPage

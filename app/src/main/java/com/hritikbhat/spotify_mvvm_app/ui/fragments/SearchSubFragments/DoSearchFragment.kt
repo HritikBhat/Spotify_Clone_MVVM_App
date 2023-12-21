@@ -1,6 +1,5 @@
 package com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments
 
-import android.content.ContentValues
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
@@ -11,8 +10,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -20,12 +17,11 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hritikbhat.spotify_mvvm_app.R
+import com.hritikbhat.spotify_mvvm_app.Utils.SharedPreferenceInstance
 import com.hritikbhat.spotify_mvvm_app.adapters.SearchAdapter
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentDoSearchBinding
 import com.hritikbhat.spotify_mvvm_app.models.AllSearchItem
 import com.hritikbhat.spotify_mvvm_app.models.OperationResult
-import com.hritikbhat.spotify_mvvm_app.models.PlayListDetail
-import com.hritikbhat.spotify_mvvm_app.models.PlayListQuery
 import com.hritikbhat.spotify_mvvm_app.models.Playlist
 import com.hritikbhat.spotify_mvvm_app.viewModels.SearchViewModel
 import kotlinx.coroutines.launch
@@ -35,8 +31,7 @@ class DoSearchFragment : Fragment(),SearchAdapter.OnItemClickListener {
     private val searchRCAdapter = SearchAdapter()
 
     private lateinit var sharedPref: SharedPreferences
-    private val MY_PREFS_NAME: String = "MY_PREFS"
-    private lateinit var curr_passHash:String
+    private lateinit var currPassHash:String
 
     private lateinit var viewModel: SearchViewModel
 
@@ -57,19 +52,17 @@ class DoSearchFragment : Fragment(),SearchAdapter.OnItemClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_do_search, container, false)
 
 
         // Initialize the ViewModel
-        viewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
+        viewModel = ViewModelProvider(this)[SearchViewModel::class.java]
 
-        sharedPref = requireContext().getSharedPreferences(MY_PREFS_NAME,
-            AppCompatActivity.MODE_PRIVATE
-        )
-        curr_passHash = sharedPref.getString("passHash", "").toString()
+        sharedPref = SharedPreferenceInstance(requireContext()).getSPInstance()
+        currPassHash = sharedPref.getString("passHash", "").toString()
 
         searchNavController = findNavController()
 
@@ -123,29 +116,11 @@ class DoSearchFragment : Fragment(),SearchAdapter.OnItemClickListener {
 
         })
 
-        requireActivity().onBackPressedDispatcher.addCallback(
-            requireActivity(),
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    Log.d(ContentValues.TAG, "Fragment back pressed invoked")
-                    // Do custom work here
-
-                    // if you want onBackPressed() to be called as normal afterwards
-                    if (isEnabled) {
-                        isEnabled = false
-                        findNavController().popBackStack()
-                    }
-                }
-            }
-        )
-
         return binding.root
     }
 
     suspend  fun getSearchResult(searchQuery: String){
-        val operationResult: OperationResult<List<AllSearchItem>> = viewModel.searchResult(curr_passHash,searchQuery)
-
-        when (operationResult) {
+        when (val operationResult: OperationResult<List<AllSearchItem>> = viewModel.searchResult(currPassHash,searchQuery)) {
             is OperationResult.Success -> {
                 // Operation was successful, handle the result
 
@@ -179,7 +154,7 @@ class DoSearchFragment : Fragment(),SearchAdapter.OnItemClickListener {
 
     override fun onSearchItemClick(plid: Int, pname: String, aname: String, ptype: Int) {
         viewModel.viewModelScope.launch {
-//            getPlaylistDetails(pname,aname,ptype, PlayListQuery(plid.toString(),curr_passHash))
+//            getPlaylistDetails(pname,aname,ptype, PlayListQuery(plid.toString(),currPassHash))
             //Send to ShowPlaylistSongsFragment
             val playlist = Playlist(plid,pname,ptype,aname)
 

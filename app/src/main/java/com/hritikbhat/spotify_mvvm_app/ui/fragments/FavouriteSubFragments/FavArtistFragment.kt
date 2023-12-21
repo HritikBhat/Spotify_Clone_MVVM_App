@@ -20,14 +20,11 @@ class FavArtistFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+
+        viewModel = ViewModelProvider(this)[FavArtistViewModel::class.java]
+
+
         return inflater.inflate(R.layout.fragment_fav_artist, container, false)
     }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(FavArtistViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
-
 }

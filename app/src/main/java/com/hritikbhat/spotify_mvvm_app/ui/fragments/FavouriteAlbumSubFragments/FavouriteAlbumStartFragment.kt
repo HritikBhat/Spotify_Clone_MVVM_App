@@ -9,13 +9,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hritikbhat.spotify_mvvm_app.R
+import com.hritikbhat.spotify_mvvm_app.Utils.SharedPreferenceInstance
 import com.hritikbhat.spotify_mvvm_app.adapters.FavPlaylistAdapter
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentFavouriteAlbumStartBinding
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentFavouritesBinding
@@ -39,24 +39,20 @@ class FavouriteAlbumStartFragment : Fragment(),FavPlaylistAdapter.OnItemClickLis
 
     private lateinit var sharedPref: SharedPreferences
 
-    private val MY_PREFS_NAME: String = "MY_PREFS"
-    private lateinit var curr_passHash:String
+    private lateinit var currPassHash:String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_favourite_album_start, container, false)
 
         binding2 = FavouritesFragment.binding
         context = binding.root.context
 
-        sharedPref = context.getSharedPreferences(
-            MY_PREFS_NAME,
-            AppCompatActivity.MODE_PRIVATE
-        )
-        curr_passHash = sharedPref.getString("passHash", "").toString()
+        sharedPref = SharedPreferenceInstance(context).getSPInstance()
+        currPassHash = sharedPref.getString("passHash", "").toString()
         viewModel = ViewModelProvider(this).get(FavAlbumViewModel::class.java)
 
 
@@ -74,8 +70,8 @@ class FavouriteAlbumStartFragment : Fragment(),FavPlaylistAdapter.OnItemClickLis
     }
 
     private suspend  fun getUserFavPlaylist(){
-        var operationResult: OperationResult<favPlaylists> =
-            viewModel.getUserFavAlbum(FavPlaylistQuery(curr_passHash,"-1"))
+        val operationResult: OperationResult<favPlaylists> =
+            viewModel.getUserFavAlbum(FavPlaylistQuery(currPassHash,"-1"))
 
         when (operationResult) {
             is OperationResult.Success -> {
@@ -115,37 +111,5 @@ class FavouriteAlbumStartFragment : Fragment(),FavPlaylistAdapter.OnItemClickLis
             val showPlaylistSongsFragmentAction = FavouriteAlbumStartFragmentDirections.actionFavouriteAlbumStartFragmentToShowPlaylistSongsFragmentFavPlaylist(playlist)
             findNavController().navigate(showPlaylistSongsFragmentAction)
     }
-
-//    suspend  fun getPlaylistDetails(pname: String, aname: String, ptype: Int, plq: PlayListQuery){
-//        val operationResult: OperationResult<PlayListDetail> = viewModel.getPlaylistDetails(plq)
-//
-//        when (operationResult) {
-//            is OperationResult.Success -> {
-//                // Operation was successful, handle the result
-//
-//                val playListDetails : PlayListDetail = operationResult.data
-//                playlistAdapter.setPlaylistItems(
-//                    plq.plid,
-//                    pname,
-//                    aname,
-//                    ptype,
-//                    playListDetails.isFav,
-//                    playListDetails
-//                )
-//                binding.noFavouriteLayout.visibility=View.GONE
-//                binding.favAlbumRC.visibility = View.GONE
-//                binding.playlistRC.visibility = View.VISIBLE
-//                binding2.tabLayout.visibility = View.GONE
-//                binding2.viewPager.isUserInputEnabled = false
-//                // Process searchList here
-//            }
-//            is OperationResult.Error -> {
-//                // An error occurred, handle the error
-//                val errorMessage = operationResult.message
-//                Log.e("ERROR", errorMessage)
-//                // Handle the error, for example, display an error message to the user
-//            }
-//        }
-//    }
 
 }
