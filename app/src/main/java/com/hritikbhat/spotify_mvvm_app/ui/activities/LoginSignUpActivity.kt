@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.hritikbhat.spotify_mvvm_app.Adapters.ImageAdapter
+import com.hritikbhat.spotify_mvvm_app.Models.SignUpImage
 import com.hritikbhat.spotify_mvvm_app.R
 import com.hritikbhat.spotify_mvvm_app.Utils.SharedPreferenceInstance
 import com.hritikbhat.spotify_mvvm_app.viewModels.LoginViewModel
@@ -38,9 +39,11 @@ class LoginSignUpActivity : AppCompatActivity() {
     private lateinit var editor : SharedPreferences.Editor
 
     private val imageList = listOf(
-        R.drawable.signup_slide1_img,
-        R.drawable.signup_slide2_img,
-        R.drawable.signup_slide3_img
+        SignUpImage(R.drawable.signup_slide1_img,"Play your favourite songs\n" +
+                "and artists."),
+        SignUpImage(R.drawable.signup_slide2_img,"Saves you data, battery\n" +
+                "and storage."),
+        SignUpImage(R.drawable.signup_slide3_img,"No credit card required.")
     )
     private var currentPage = 0
 

@@ -156,7 +156,7 @@ class DoSearchFragment : Fragment(),SearchAdapter.OnItemClickListener {
            //Send to ShowPlaylistSongsFragment
             val playlist = Playlist(plid,pname,ptype,aname)
 
-            val showPlaylistSongsFragmentAction = DoSearchFragmentDirections.actionDoSearchFragmentToShowPlaylistSongsFragment(playlist)
+            val showPlaylistSongsFragmentAction = DoSearchFragmentDirections.actionDoSearchFragmentToShowPlaylistNavGraph(playlist)
             searchNavController.navigate(showPlaylistSongsFragmentAction)
 
         }

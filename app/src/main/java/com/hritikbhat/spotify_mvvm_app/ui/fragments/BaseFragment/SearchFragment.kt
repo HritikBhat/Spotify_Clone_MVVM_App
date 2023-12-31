@@ -1,4 +1,4 @@
-package com.hritikbhat.spotify_mvvm_app.ui.fragments
+package com.hritikbhat.spotify_mvvm_app.ui.Fragments.BaseFragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

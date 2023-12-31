@@ -21,7 +21,8 @@
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
             android:background="@color/spotify_bg"
-            app:tabMode="fixed"
+            app:tabMode="auto"
+            android:ellipsize="end"
             app:tabGravity="fill"
             app:tabSelectedTextColor="@android:color/white"
             app:tabTextColor="@android:color/darker_gray" />

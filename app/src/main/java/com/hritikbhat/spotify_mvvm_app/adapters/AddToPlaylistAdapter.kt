@@ -2,7 +2,6 @@ package com.hritikbhat.spotify_mvvm_app.adapters
 
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -14,7 +13,7 @@ import com.hritikbhat.spotify_mvvm_app.databinding.AddToPlaylistItemRegularBindi
 class AddToPlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val HEADER_VIEW_TYPE = 0
     private val ITEM_VIEW_TYPE = 1
-    private var onItemClickListener: AddToPlaylistAdapter.OnItemClickListener? = null
+    private var onItemClickListener: OnItemClickListener? = null
     private lateinit var sid:String
 
 
@@ -59,9 +58,12 @@ class AddToPlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
             binding.customPlaylistName.text = items[position-1].plname
 
-            binding.customPlaylistItemLayout.setOnClickListener(View.OnClickListener {
-                onItemClickListener?.onSelectingAddToPlaylistItemClick(items[position-1].plid.toString(),sid)
-            })
+            binding.customPlaylistItemLayout.setOnClickListener {
+                onItemClickListener?.onSelectingAddToPlaylistItemClick(
+                    items[position - 1].plid.toString(),
+                    sid
+                )
+            }
 
 
         }

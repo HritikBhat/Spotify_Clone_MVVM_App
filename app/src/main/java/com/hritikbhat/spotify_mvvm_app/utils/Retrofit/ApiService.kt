@@ -27,6 +27,9 @@ interface ApiService {
     @POST("api/search/searchFunc.php") // Replace with the actual URL of your PHP script
     suspend fun searchResults(@Body request: SearchQuery): Response<SearchList>
 
+    @POST("api/search/getRandomPlaylists.php") // Replace with the actual URL of your PHP script
+    suspend fun getExplorePlaylists(@Body request: SearchQuery): Response<SearchList>
+
     @POST("api/playlist/getPlaylistDetails.php") // Replace with the actual URL of your PHP script
     suspend fun getPlaylistDetails(@Body request: PlayListQuery): Response<PlayListDetail>
 

@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 import com.hritikbhat.spotify_mvvm_app.models.Song
 import com.hritikbhat.spotify_mvvm_app.models.PlayListDetail
@@ -86,6 +88,7 @@ class PlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
                     Glide.with(binding.root.context)
                         .load(plURL).thumbnail()
+                        .transform(CenterCrop(), RoundedCorners(10))
                         .into(binding.playlistImage)
 
                     binding.playlistShufflePlay.visibility = View.GONE
@@ -94,16 +97,18 @@ class PlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
 
             binding.playlistShufflePlay.setOnClickListener{
-                val intent = Intent(binding.root.context, PlayActivity::class.java)
-                val gson = Gson()
+                if ((itemCount-1)>0) {
+                    val intent = Intent(binding.root.context, PlayActivity::class.java)
+                    val gson = Gson()
 
-                val randomNumber = Random.nextInt(items.size)
-                intent.putExtra("class", "ActivityOrAdapterPlaying")
-                intent.putExtra("songList", gson.toJson(items))
-                intent.putExtra("position",randomNumber)
-                intent.putExtra("ptype",ptype)
-                intent.putExtra("onShuffle",true)
-                binding.root.context.startActivity(intent)
+                    val randomNumber = Random.nextInt(items.size)
+                    intent.putExtra("class", "ActivityOrAdapterPlaying")
+                    intent.putExtra("songList", gson.toJson(items))
+                    intent.putExtra("position", randomNumber)
+                    intent.putExtra("ptype", ptype)
+                    intent.putExtra("onShuffle", true)
+                    binding.root.context.startActivity(intent)
+                }
             }
 
 

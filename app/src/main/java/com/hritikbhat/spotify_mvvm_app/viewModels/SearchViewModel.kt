@@ -10,6 +10,7 @@ import com.hritikbhat.spotify_mvvm_app.models.FavTransactionResp
 import com.hritikbhat.spotify_mvvm_app.models.OperationResult
 import com.hritikbhat.spotify_mvvm_app.models.PlayListDetail
 import com.hritikbhat.spotify_mvvm_app.models.PlayListQuery
+import com.hritikbhat.spotify_mvvm_app.models.Playlist
 import com.hritikbhat.spotify_mvvm_app.models.favPlaylists
 import com.hritikbhat.spotify_mvvm_app.utils.Classes.CustomPlaylistSongManager
 import com.hritikbhat.spotify_mvvm_app.utils.Classes.PlaylistFavouritesManager
@@ -30,8 +31,8 @@ class SearchViewModel() : ViewModel() {
     private var searchManager = SearchManager(apiService)
     private var playlistManager = PlaylistManager(apiService)
 
-    suspend fun searchResult(pashHash:String,searchQuery: String): OperationResult<List<AllSearchItem>> {
-        return searchManager.searchResult(pashHash, searchQuery)
+    suspend fun searchResult(passHash:String,searchQuery: String): OperationResult<List<AllSearchItem>> {
+        return searchManager.searchResult(passHash, searchQuery)
     }
 
     suspend fun getPlaylistDetails(plq: PlayListQuery): OperationResult<PlayListDetail> {

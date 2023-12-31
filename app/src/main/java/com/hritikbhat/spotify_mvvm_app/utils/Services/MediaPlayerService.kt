@@ -95,6 +95,7 @@ class MediaPlayerService: Service() {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setOnlyAlertOnce(true)
+            .setOngoing(true)
             .addAction(R.drawable.ic_back,"Previous", prevPendingIntent)
             .addAction(playPauseBtnDrawable,"Play", playPendingIntent)
             .addAction(R.drawable.ic_next,"Next", nextPendingIntent)

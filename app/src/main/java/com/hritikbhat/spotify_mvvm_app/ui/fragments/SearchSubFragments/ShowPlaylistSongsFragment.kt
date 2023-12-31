@@ -27,7 +27,7 @@ import com.hritikbhat.spotify_mvvm_app.models.PlayListDetail
 import com.hritikbhat.spotify_mvvm_app.models.PlayListQuery
 import com.hritikbhat.spotify_mvvm_app.models.Playlist
 import com.hritikbhat.spotify_mvvm_app.models.Song
-import com.hritikbhat.spotify_mvvm_app.ui.fragments.FavouritesFragment
+import com.hritikbhat.spotify_mvvm_app.ui.Fragments.BaseFragment.FavouritesFragment
 import com.hritikbhat.spotify_mvvm_app.viewModels.SearchViewModel
 import com.hritikbhat.spotify_mvvm_app.viewModels.SubFragmentsViewModels.FavPlaylistViewModel
 import kotlinx.coroutines.launch
@@ -213,7 +213,7 @@ class ShowPlaylistSongsFragment : Fragment(),PlaylistAdapter.OnItemClickListener
     override fun onItemPlaylistMoreOptionClick(plid: String, pname: String, ptype: Int) {
         //Send to PlaylistMoreOption
         if (ptype==3){
-            val action = ShowPlaylistSongsFragmentDirections.actionShowPlaylistSongsFragmentToCustomPlaylistMoreOptionFragment2(playlistData)
+            val action = ShowPlaylistSongsFragmentDirections.actionShowPlaylistSongsFragmentToCustomPlaylistMoreOptionFragment(playlistData)
             findNavController().navigate(action)
         }
         else{

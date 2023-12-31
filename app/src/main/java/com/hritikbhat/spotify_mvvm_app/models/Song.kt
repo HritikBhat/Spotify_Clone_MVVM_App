@@ -1,12 +1,11 @@
 package com.hritikbhat.spotify_mvvm_app.models
 
-import android.app.Activity
 import android.app.Service.STOP_FOREGROUND_REMOVE
 import android.os.Parcel
 import android.os.Parcelable
 import android.view.View
 import com.hritikbhat.spotify_mvvm_app.ui.activities.PlayActivity
-import com.hritikbhat.spotify_mvvm_app.ui.fragments.NowPlaying
+import com.hritikbhat.spotify_mvvm_app.ui.Fragments.BaseFragment.NowPlaying
 import kotlin.random.Random
 
 

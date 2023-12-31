@@ -6,7 +6,7 @@ import android.content.Intent
 import android.util.Log
 import com.hritikbhat.spotify_mvvm_app.models.exitApplication
 import com.hritikbhat.spotify_mvvm_app.models.setSongPosition
-import com.hritikbhat.spotify_mvvm_app.ui.fragments.NowPlaying
+import com.hritikbhat.spotify_mvvm_app.ui.Fragments.BaseFragment.NowPlaying
 import com.hritikbhat.spotify_mvvm_app.R
 import com.hritikbhat.spotify_mvvm_app.ui.activities.PlayActivity
 

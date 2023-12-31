@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/recentItemLayout"
+        android:id="@+id/exploreItemLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="5dp">
+        android:layout_marginVertical="5dp">
 
         <ImageView
-            android:id="@+id/recentPhotoImg"
+            android:id="@+id/explorePhotoImg"
             android:layout_width="130dp"
             android:layout_height="130dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -22,7 +22,7 @@
             app:srcCompat="@drawable/album_img" />
 
         <TextView
-            android:id="@+id/recentSongName"
+            android:id="@+id/exploreSongName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -32,8 +32,8 @@
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/recentPhotoImg"
-            app:layout_constraintStart_toStartOf="@+id/recentPhotoImg"
-            app:layout_constraintTop_toBottomOf="@+id/recentPhotoImg" />
+            app:layout_constraintEnd_toEndOf="@+id/explorePhotoImg"
+            app:layout_constraintStart_toStartOf="@+id/explorePhotoImg"
+            app:layout_constraintTop_toBottomOf="@+id/explorePhotoImg" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

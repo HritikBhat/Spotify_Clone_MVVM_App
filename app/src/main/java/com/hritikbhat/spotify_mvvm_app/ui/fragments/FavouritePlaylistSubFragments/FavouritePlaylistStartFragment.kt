@@ -113,7 +113,7 @@ class FavouritePlaylistStartFragment : Fragment(),FavPlaylistAdapter.OnItemClick
 
                 val playlist = Playlist(plid,pname,ptype,aname)
 
-                val showPlaylistSongsFragmentAction = FavouritePlaylistStartFragmentDirections.actionFavouritePlaylistStartFragmentToShowPlaylistSongsFragmentFavPlaylist(playlist)
+                val showPlaylistSongsFragmentAction = FavouritePlaylistStartFragmentDirections.actionFavouritePlaylistStartFragmentToShowPlaylistNavGraph(playlist)
                 findNavController().navigate(showPlaylistSongsFragmentAction)
 
             }

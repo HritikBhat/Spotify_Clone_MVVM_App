@@ -205,7 +205,6 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
                 mediaPlayerService!!.showNotification(R.drawable.ic_pause)
                 updateSeekBar()
 
-
             }
             isPlaying = !isPlaying
         }
@@ -218,13 +217,6 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
             this,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-//                    if(binding.songMoreOptionLayout.visibility==View.VISIBLE){
-//                        binding.playConstraintLayout.visibility=View.VISIBLE
-//                        binding.songMoreOptionLayout.visibility = View.GONE
-//
-//                    } else{
-//                        finish()
-//                    }
                     finish()
                 }
             }
@@ -293,20 +285,22 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
 
         val jsonSongList = intent.getStringExtra("songList")
 
-        viewModel.viewModelScope.launch {
-            songListArr = convertSongJsonStringToArraylist(jsonSongList.toString())
+        Log.d("Song Detail JSON",jsonSongList.toString())
+
+
+
+        viewModel.viewModelScope.launch() {
+            withContext(Dispatchers.Default){
+                songListArr = convertSongJsonStringToArraylist(jsonSongList.toString())
+            }.apply {
+                onShuffle = intent.getBooleanExtra("onShuffle",false)
+                position = intent.getIntExtra("position",-1)
+                ptype = extras.getInt("ptype")
+
+                initializeLayout()
+            }
+
         }
-
-
-        onShuffle = intent.getBooleanExtra("onShuffle",false)
-        position = intent.getIntExtra("position",-1)
-        ptype = extras.getInt("ptype")
-
-
-        initializeLayout()
-
-
-
 
     }
 

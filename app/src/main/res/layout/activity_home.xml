@@ -27,7 +27,7 @@
 
         <fragment
             android:id="@+id/nowPlaying"
-            android:name="com.hritikbhat.spotify_mvvm_app.ui.fragments.NowPlaying"
+            android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.BaseFragment.NowPlaying"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:visibility="gone"

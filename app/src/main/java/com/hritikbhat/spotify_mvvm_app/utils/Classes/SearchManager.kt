@@ -3,6 +3,7 @@ package com.hritikbhat.spotify_mvvm_app.utils.Classes
 import android.util.Log
 import com.hritikbhat.spotify_mvvm_app.models.AllSearchItem
 import com.hritikbhat.spotify_mvvm_app.models.OperationResult
+import com.hritikbhat.spotify_mvvm_app.models.Playlist
 import com.hritikbhat.spotify_mvvm_app.models.SearchList
 import com.hritikbhat.spotify_mvvm_app.models.SearchQuery
 import com.hritikbhat.spotify_mvvm_app.utils.Retrofit.ApiService
@@ -64,5 +65,37 @@ class SearchManager(private val apiService: ApiService) {
             return OperationResult.Error("Exception: ${cancelError.message}")
         }
     }
+
+
+    suspend fun getExplorePlaylists(pashHash:String): OperationResult<List<Playlist>>{
+
+        try {
+            return withContext(Dispatchers.Default){
+                try {
+                    ensureActive()
+                    val response = apiService.getExplorePlaylists(SearchQuery(pashHash,""))
+                    if (response.body() != null) {
+                        val searchResult: SearchList? = response.body()
+                        if (searchResult != null) {
+                            OperationResult.Success(searchResult.playlist)
+                        } else {
+                            OperationResult.Error("Search result is null") // Resume with false when auth is null
+                        }
+                    } else {
+                        OperationResult.Error("Network error")
+                    }
+                }
+                catch (e:Exception){
+                    e.printStackTrace()
+                    OperationResult.Error("Exception: ${e.message}")
+                }
+            }
+        }
+        catch (cancelError: CancellationException){
+            cancelError.printStackTrace()
+            return OperationResult.Error("Exception: ${cancelError.message}")
+        }
+    }
+
 
 }

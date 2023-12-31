@@ -16,7 +16,7 @@ import com.hritikbhat.spotify_mvvm_app.R
 
 class GridItemAdapter(context: Context, private val genres: List<String>) : ArrayAdapter<String>(context, 0, genres) {
 
-    var bgColorIndex:Int = 0
+    private var bgColorIndex:Int = 0
 
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {

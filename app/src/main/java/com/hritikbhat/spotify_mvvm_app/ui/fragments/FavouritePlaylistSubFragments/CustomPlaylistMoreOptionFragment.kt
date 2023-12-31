@@ -17,11 +17,10 @@ import androidx.navigation.fragment.findNavController
 import com.hritikbhat.spotify_mvvm_app.R
 import com.hritikbhat.spotify_mvvm_app.Utils.SharedPreferenceInstance
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentCustomPlaylistMoreOptionBinding
-import com.hritikbhat.spotify_mvvm_app.databinding.FragmentFavouritesBinding
 import com.hritikbhat.spotify_mvvm_app.models.AddSongPlaylistQuery
 import com.hritikbhat.spotify_mvvm_app.models.FavTransactionResp
 import com.hritikbhat.spotify_mvvm_app.models.OperationResult
-import com.hritikbhat.spotify_mvvm_app.ui.fragments.FavouritesFragment
+import com.hritikbhat.spotify_mvvm_app.ui.Fragments.BaseFragment.FavouritesFragment
 import com.hritikbhat.spotify_mvvm_app.viewModels.SubFragmentsViewModels.FavPlaylistViewModel
 import kotlinx.coroutines.launch
 

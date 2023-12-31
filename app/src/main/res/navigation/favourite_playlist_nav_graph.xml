@@ -6,78 +6,25 @@
     app:startDestination="@id/favouritePlaylistStartFragment">
 
     <fragment
-        android:id="@+id/addToCustomPlaylistFragment"
-        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.AddToCustomPlaylistFragment"
-        android:label="AddToCustomPlaylistFragment"
-        tools:layout="@layout/fragment_add_to_custom_playlist">
-        <argument
-            android:name="sid"
-            android:defaultValue="-1"
-            app:argType="integer" />
-    </fragment>
-    <fragment
-        android:id="@+id/songMoreOptionFragmentFavPlaylist"
-        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.SongMoreOptionFragment"
-        android:label="fragment_song_more_option"
-        tools:layout="@layout/fragment_song_more_option">
-        <argument
-            android:name="plid"
-            android:defaultValue="plid_NF"
-            app:argType="string" />
-        <argument
-            android:name="songData"
-            app:argType="com.hritikbhat.spotify_mvvm_app.models.Song" />
-        <argument
-            android:name="position"
-            android:defaultValue="-1"
-            app:argType="integer" />
-        <argument
-            android:name="ptype"
-            android:defaultValue="-1"
-            app:argType="integer" />
-        <action
-            android:id="@+id/action_songMoreOptionFragment_to_addToCustomPlaylistFragment"
-            app:destination="@id/addToCustomPlaylistFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/favouritePlaylistStartFragment"
         android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.FavouritePlaylistSubFragments.FavouritePlaylistStartFragment"
         android:label="FavouritePlaylistStartFragment"
         tools:layout="@layout/fragment_favourite_playlist_start">
         <action
-            android:id="@+id/action_favouritePlaylistStartFragment_to_showPlaylistSongsFragmentFavPlaylist"
-            app:destination="@id/showPlaylistSongsFragmentFavPlaylist" />
-        <action
             android:id="@+id/action_favouritePlaylistStartFragment_to_addCustomPlaylistFragment"
             app:destination="@id/addCustomPlaylistFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/showPlaylistSongsFragmentFavPlaylist"
-        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.ShowPlaylistSongsFragment"
-        android:label="ShowPlaylistSongsFragment"
-        tools:layout="@layout/fragment_show_playlist_songs">
         <action
-            android:id="@+id/action_showPlaylistSongsFragment_to_songMoreOptionFragment"
-            app:destination="@id/songMoreOptionFragmentFavPlaylist" />
-        <action
-            android:id="@+id/action_showPlaylistSongsFragment_to_customPlaylistMoreOptionFragment2"
-            app:destination="@id/customPlaylistMoreOptionFragment" />
-        <argument
-            android:name="playlistObjData"
-            app:argType="com.hritikbhat.spotify_mvvm_app.models.Playlist" />
+            android:id="@+id/action_favouritePlaylistStartFragment_to_show_playlist_nav_graph"
+            app:destination="@id/show_playlist_nav_graph" >
+            <argument
+                android:name="playlistObjData"
+                app:argType="com.hritikbhat.spotify_mvvm_app.models.Playlist" />
+        </action>
     </fragment>
+    <include app:graph="@navigation/show_playlist_nav_graph" />
     <fragment
         android:id="@+id/addCustomPlaylistFragment"
         android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.FavouritePlaylistSubFragments.AddCustomPlaylistFragment"
         android:label="AddCustomPlaylistFragment"
         tools:layout="@layout/fragment_add_custom_playlist"/>
-    <fragment
-        android:id="@+id/customPlaylistMoreOptionFragment"
-        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.FavouritePlaylistSubFragments.CustomPlaylistMoreOptionFragment"
-        android:label="CustomPlaylistMoreOptionFragment"
-        tools:layout="@layout/fragment_custom_playlist_more_option">
-        <argument
-            android:name="playlistData"
-            app:argType="com.hritikbhat.spotify_mvvm_app.models.Playlist" />
-    </fragment>
 </navigation>

@@ -28,7 +28,7 @@ import com.hritikbhat.spotify_mvvm_app.R
 import com.hritikbhat.spotify_mvvm_app.Utils.SharedPreferenceInstance
 import com.hritikbhat.spotify_mvvm_app.Utils.TransactionTypes
 import com.hritikbhat.spotify_mvvm_app.databinding.FragmentFavPodcastBinding
-import com.hritikbhat.spotify_mvvm_app.ui.fragments.FavouritesFragment
+import com.hritikbhat.spotify_mvvm_app.ui.Fragments.BaseFragment.FavouritesFragment
 import kotlinx.coroutines.launch
 
 class FavPodcastFragment : Fragment(), FavPlaylistAdapter.OnItemClickListener,PlaylistAdapter.OnItemClickListener {

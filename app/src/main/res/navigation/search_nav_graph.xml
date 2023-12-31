@@ -5,6 +5,8 @@
     android:id="@+id/search_nav_graph"
     app:startDestination="@id/searchStartFragment">
 
+
+    <include app:graph="@navigation/show_playlist_nav_graph" />
     <fragment
         android:id="@+id/searchStartFragment"
         android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.SearchStartFragment"
@@ -20,65 +22,12 @@
         android:label="DoSearchFragment"
         tools:layout="@layout/fragment_do_search">
         <action
-            android:id="@+id/action_doSearchFragment_to_showPlaylistSongsFragment"
-            app:destination="@id/showPlaylistSongsFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/showPlaylistSongsFragment"
-        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.ShowPlaylistSongsFragment"
-        android:label="ShowPlaylistSongsFragment"
-        tools:layout="@layout/fragment_show_playlist_songs">
-        <action
-            android:id="@+id/action_showPlaylistSongsFragment_to_playlistMoreOptionFragment"
-            app:destination="@id/playlistMoreOptionFragment" />
-        <action
-            android:id="@+id/action_showPlaylistSongsFragment_to_songMoreOptionFragment"
-            app:destination="@id/songMoreOptionFragment" />
-        <argument
-            android:name="playlistObjData"
-            app:argType="com.hritikbhat.spotify_mvvm_app.models.Playlist" />
-        <action
-            android:id="@+id/action_showPlaylistSongsFragment_to_customPlaylistMoreOptionFragment2"
-            app:destination="@id/customPlaylistMoreOptionFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/songMoreOptionFragment"
-        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.SongMoreOptionFragment"
-        android:label="fragment_song_more_option"
-        tools:layout="@layout/fragment_song_more_option" >
-        <action
-            android:id="@+id/action_songMoreOptionFragment_to_addToCustomPlaylistFragment"
-            app:destination="@id/addToCustomPlaylistFragment" />
-        <argument
-            android:name="plid"
-            app:argType="string"
-            android:defaultValue="plid_NF" />
-        <argument
-            android:name="songData"
-            app:argType="com.hritikbhat.spotify_mvvm_app.models.Song" />
-        <argument
-            android:name="position"
-            app:argType="integer"
-            android:defaultValue="-1" />
-        <argument
-            android:name="ptype"
-            app:argType="integer"
-            android:defaultValue="-1" />
-    </fragment>
-    <fragment
-        android:id="@+id/playlistMoreOptionFragment"
-        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.PlaylistMoreOptionFragment"
-        android:label="PlaylistMoreOptionFragment"
-        tools:layout="@layout/fragment_playlist_more_option"/>
-    <fragment
-        android:id="@+id/addToCustomPlaylistFragment"
-        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.AddToCustomPlaylistFragment"
-        android:label="AddToCustomPlaylistFragment"
-        tools:layout="@layout/fragment_add_to_custom_playlist">
-        <argument
-            android:name="sid"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            android:id="@+id/action_doSearchFragment_to_show_playlist_nav_graph"
+            app:destination="@id/show_playlist_nav_graph" >
+            <argument
+                android:name="playlistObjData"
+                app:argType="com.hritikbhat.spotify_mvvm_app.models.Playlist" />
+        </action>
     </fragment>
     <argument
         android:name="sid"

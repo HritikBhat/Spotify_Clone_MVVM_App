@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/show_playlist_nav_graph"
+    app:startDestination="@id/showPlaylistSongsFragment">
+
+    <fragment
+        android:id="@+id/showPlaylistSongsFragment"
+        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.ShowPlaylistSongsFragment"
+        tools:layout="@layout/fragment_show_playlist_songs"
+        android:label="ShowPlaylistSongsFragment">
+        <action
+            android:id="@+id/action_showPlaylistSongsFragment_to_playlistMoreOptionFragment"
+            app:destination="@id/playlistMoreOptionFragment" />
+        <action
+            android:id="@+id/action_showPlaylistSongsFragment_to_songMoreOptionFragment"
+            app:destination="@id/songMoreOptionFragment" />
+        <argument
+            android:name="playlistObjData"
+            app:argType="com.hritikbhat.spotify_mvvm_app.models.Playlist" />
+        <action
+            android:id="@+id/action_showPlaylistSongsFragment_to_customPlaylistMoreOptionFragment"
+            app:destination="@id/customPlaylistMoreOptionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/songMoreOptionFragment"
+        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.SongMoreOptionFragment"
+        tools:layout="@layout/fragment_song_more_option"
+        android:label="fragment_song_more_option">
+        <action
+            android:id="@+id/action_songMoreOptionFragment_to_addToCustomPlaylistFragment"
+            app:destination="@id/addToCustomPlaylistFragment" />
+        <argument
+            android:name="plid"
+            android:defaultValue="plid_NF"
+            app:argType="string" />
+        <argument
+            android:name="songData"
+            app:argType="com.hritikbhat.spotify_mvvm_app.models.Song" />
+        <argument
+            android:name="position"
+            android:defaultValue="-1"
+            app:argType="integer" />
+        <argument
+            android:name="ptype"
+            android:defaultValue="-1"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/customPlaylistMoreOptionFragment"
+        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.FavouritePlaylistSubFragments.CustomPlaylistMoreOptionFragment"
+        android:label="CustomPlaylistMoreOptionFragment"
+        tools:layout="@layout/fragment_custom_playlist_more_option">
+        <argument
+            android:name="playlistData"
+            app:argType="com.hritikbhat.spotify_mvvm_app.models.Playlist" />
+    </fragment>
+    <fragment
+        android:id="@+id/playlistMoreOptionFragment"
+        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.PlaylistMoreOptionFragment"
+        tools:layout="@layout/fragment_playlist_more_option"
+        android:label="PlaylistMoreOptionFragment" />
+    <fragment
+        android:id="@+id/addToCustomPlaylistFragment"
+        android:name="com.hritikbhat.spotify_mvvm_app.ui.Fragments.SearchSubFragments.AddToCustomPlaylistFragment"
+        tools:layout="@layout/fragment_add_to_custom_playlist"
+        android:label="AddToCustomPlaylistFragment">
+        <argument
+            android:name="sid"
+            android:defaultValue="-1"
+            app:argType="integer" />
+    </fragment>
+</navigation>

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="@color/spotify_bg"
         android:padding="5dp"
-        tools:context=".ui.fragments.NowPlaying">
+        tools:context=".ui.Fragments.BaseFragment.NowPlaying">
 
         <TextView
             android:id="@+id/nowPlayingSongName"
