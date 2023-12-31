@@ -75,6 +75,11 @@ class PlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 binding.playlistMenuBtn.setOnClickListener {
                     onItemClickListener?.onItemPlaylistMoreOptionClick(plid, pName, ptype)
                 }
+
+
+                if ((itemCount-1) <= 0){
+                    binding.playlistShufflePlay.visibility = View.GONE
+                }
             }
 
             else if (plid == "-1"){
@@ -83,6 +88,7 @@ class PlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }else{
                 binding.playlistFavBtn.visibility= View.VISIBLE
 
+                Log.d("Playlist ItemCount",(itemCount-1).toString())
                 if ((itemCount-1)>0){
                     val plURL = RetrofitHelper.BASE_URL +"data/img/playlist/${items[0].albumId}.jpg"
 
@@ -91,6 +97,8 @@ class PlaylistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         .transform(CenterCrop(), RoundedCorners(10))
                         .into(binding.playlistImage)
 
+                }
+                else{
                     binding.playlistShufflePlay.visibility = View.GONE
                 }
 
