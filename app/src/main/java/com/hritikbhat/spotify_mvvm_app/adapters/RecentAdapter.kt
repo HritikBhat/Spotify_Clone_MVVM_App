@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 import com.hritikbhat.spotify_mvvm_app.models.Song
 import com.hritikbhat.spotify_mvvm_app.R
@@ -56,6 +58,7 @@ class RecentAdapter : RecyclerView.Adapter<RecentAdapter.ViewHolder>() {
 
             Glide.with(binding.recentPhotoImg.context)
                 .load(typeImg).thumbnail()
+                .transform(CenterCrop(),RoundedCorners(15))
                 .into(binding.recentPhotoImg)
 
             binding.recentSongName.text = item.sname

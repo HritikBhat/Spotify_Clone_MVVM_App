@@ -95,6 +95,7 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
 
                     binding.playPauseBtn.setImageResource(R.drawable.ic_play)
                     mediaPlayerService!!.showNotification(R.drawable.ic_play)
+                    Log.d("MediaPlayerStatus","Resumed Paused")
                 }
             }
 
@@ -251,8 +252,15 @@ class PlayActivity : AppCompatActivity(),ServiceConnection {
             "NowPlaying"->{
 
                 setLayout()
-                binding.playPauseBtn.setImageResource(R.drawable.ic_pause)
-                updateSeekBar()
+
+                if (mediaPlayerService!=null){
+                    if (mediaPlayerService?.mediaPlayer!!.isPlaying){
+                        Log.d("MediaPlayerStatus","Started")
+                        binding.playPauseBtn.setImageResource(R.drawable.ic_pause)
+                        updateSeekBar()
+                    }
+                }
+
             }
             "ActivityOrAdapterPlaying"->{
                 //For Starting Service

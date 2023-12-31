@@ -25,6 +25,7 @@ import com.hritikbhat.spotify_mvvm_app.databinding.FragmentHomeBinding
 import com.hritikbhat.spotify_mvvm_app.models.Playlist
 import com.hritikbhat.spotify_mvvm_app.ui.activities.SettingsActivity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -66,6 +67,9 @@ class HomeFragment : Fragment(),PlaylistGridItemAdapter.OnItemClickListener {
 
 //        _recentRCAdapter = RecentAdapter()
 
+        binding.homeScrollView.visibility =View.INVISIBLE
+        binding.loadingLayout.visibility = View.VISIBLE
+
         // Initialize the ViewModel
 
         _recentRCAdapter = RecentAdapter()
@@ -96,6 +100,9 @@ class HomeFragment : Fragment(),PlaylistGridItemAdapter.OnItemClickListener {
             binding.homeRV.layoutManager = layoutManager
             binding.homeRV.adapter = playlistGridItemAdapter
             binding.homeRV.isNestedScrollingEnabled = false
+            delay(200)
+            binding.homeScrollView.visibility =View.VISIBLE
+            binding.loadingLayout.visibility = View.GONE
         }
 
         return binding.root
